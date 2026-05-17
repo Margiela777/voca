@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수능 영어 단어장 생성기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F6F3;
+  --surface: #FFFFFF;
+  --surface2: #F2F0EB;
+  --border: #E0DDD6;
+  --border2: #C8C4BC;
+  --text: #1A1916;
+  --text2: #6B6760;
+  --text3: #9E9B95;
+  --accent: #2D5A3D;
+  --accent-light: #EAF2EC;
+  --accent2: #1B3A6B;
+  --accent2-light: #E8EEF7;
+  --gemini: #C9470A;
+  --gemini-light: #FDF0EA;
+  --danger: #B91C1C;
+  --danger-light: #FEF2F2;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+.layout { display: grid; grid-template-columns: 400px 1fr; min-height: 100vh; }
+
+/* Sidebar */
+.sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar-header { padding: 28px 24px 20px; border-bottom: 1px solid var(--border); }
+.logo { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.logo-icon { width: 36px; height: 36px; background: var(--text); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+.logo h1 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+.logo-sub { font-size: 12px; color: var(--text3); margin-left: 46px; }
+.sidebar-body { padding: 20px 24px; flex: 1; display: flex; flex-direction: column; gap: 18px; }
+.sec-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+
+/* Engine */
+.engine-selector { background: var(--surface2); border-radius: var(--radius); padding: 4px; display: flex; gap: 2px; }
+.engine-btn { flex: 1; padding: 8px 10px; border: none; background: transparent; border-radius: 7px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text2); display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
+.engine-btn.active-claude { background: var(--surface); color: var(--accent); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.engine-btn.active-gemini { background: var(--surface); color: var(--gemini); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.engine-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+.api-panel { background: var(--gemini-light); border: 1px solid #F0C4A8; border-radius: var(--radius); padding: 14px; display: none; }
+.api-panel.show { display: block; }
+.api-panel-title { font-size: 12px; font-weight: 500; color: var(--gemini); margin-bottom: 8px; }
+.api-input-row { display: flex; gap: 6px; }
+.api-input-row input { flex: 1; font-family: 'DM Mono', monospace; font-size: 12px; padding: 8px 10px; border: 1px solid #F0C4A8; border-radius: 7px; background: white; color: var(--text); }
+.api-input-row input:focus { outline: none; border-color: var(--gemini); }
+.btn-save-key { padding: 8px 12px; background: var(--gemini); color: white; border: none; border-radius: 7px; font-size: 12px; cursor: pointer; white-space: nowrap; font-family: 'Noto Sans KR', sans-serif; }
+.api-hint { font-size: 11px; color: #A05A3A; margin-top: 6px; }
+.api-hint a { color: var(--gemini); }
+
+/* Input Mode Tabs */
+.mode-tabs { display: flex; background: var(--surface2); border-radius: var(--radius); padding: 3px; gap: 2px; }
+.mode-tab { flex: 1; padding: 7px 8px; border: none; background: transparent; border-radius: 7px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); transition: all 0.15s; text-align: center; }
+.mode-tab.active { background: var(--surface); color: var(--text); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+/* Text Input Area */
+.text-input-wrap { display: flex; flex-direction: column; gap: 6px; }
+.paste-area { width: 100%; min-height: 160px; padding: 12px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text); background: var(--surface); resize: vertical; line-height: 1.7; transition: border-color 0.15s; }
+.paste-area:focus { outline: none; border-color: var(--accent); }
+.paste-area::placeholder { color: var(--text3); }
+.paste-actions { display: flex; gap: 6px; }
+.btn-paste { flex: 1; padding: 8px; background: var(--accent-light); border: 1px solid #B8D9C0; border-radius: var(--radius); color: var(--accent); font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; transition: all 0.15s; }
+.btn-paste:hover { background: #D4ECD8; }
+.btn-clear-text { padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text2); font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.char-count { font-size: 11px; color: var(--text3); text-align: right; }
+
+/* Upload Zone */
+.upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--radius); padding: 20px 16px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface2); }
+.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-light); }
+.upload-icon { font-size: 24px; margin-bottom: 6px; }
+.upload-zone p { font-size: 13px; color: var(--text2); }
+.upload-zone span { font-size: 11px; color: var(--text3); display: block; margin-top: 2px; }
+.file-chip { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--accent-light); border: 1px solid #B8D9C0; border-radius: var(--radius); margin-top: 8px; }
+.file-chip-icon { font-size: 16px; }
+.file-chip-name { font-size: 12px; color: var(--accent); flex: 1; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.file-chip-del { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; }
+.img-thumb { width: 100%; max-height: 100px; object-fit: cover; border-radius: 7px; margin-top: 8px; display: none; border: 1px solid var(--border); }
+
+/* Settings */
+select { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); appearance: none; -webkit-appearance: none; cursor: pointer; transition: border-color 0.15s; }
+select:focus { outline: none; border-color: var(--accent); }
+.select-wrap { position: relative; }
+.select-wrap::after { content: '▾'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text3); pointer-events: none; }
+
+/* Tags */
+.tags-wrap { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.tag { display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px 3px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text2); font-family: 'DM Mono', monospace; }
+.tag-del { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 13px; padding: 0; line-height: 1; }
+.tag-input-row { display: flex; gap: 6px; }
+.tag-input-row input { flex: 1; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); }
+.tag-input-row input:focus { outline: none; border-color: var(--accent); }
+.btn-add-tag { padding: 9px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text2); white-space: nowrap; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+.btn-add-tag:hover { background: var(--border); }
+
+/* Run Button */
+.btn-run { width: 100%; padding: 13px; background: var(--text); color: white; border: none; border-radius: var(--radius); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; margin-top: auto; }
+.btn-run:hover:not(:disabled) { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.btn-run:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+/* Error */
+.error-bar { padding: 12px 16px; background: var(--danger-light); border: 1px solid #FECACA; border-radius: var(--radius); color: var(--danger); font-size: 13px; display: none; }
+.error-bar.show { display: block; }
+
+/* Main */
+.main { padding: 32px; display: flex; flex-direction: column; gap: 20px; }
+.empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 40px; color: var(--text3); }
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+.empty-state h2 { font-size: 18px; color: var(--text2); font-weight: 500; margin-bottom: 6px; }
+.empty-state p { font-size: 13px; line-height: 1.8; }
+
+/* Progress */
+.progress-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; text-align: center; display: none; box-shadow: var(--shadow); }
+.progress-card.show { display: block; }
+.spinner { width: 36px; height: 36px; border: 2.5px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin 0.75s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.progress-text { font-size: 14px; color: var(--text2); }
+
+/* Result */
+.result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); display: none; animation: fadeIn 0.3s ease; }
+.result-card.show { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.result-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.result-title { font-size: 16px; font-weight: 500; }
+.stat-chips { display: flex; gap: 8px; }
+.stat-chip { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+.chip-word { background: var(--accent2-light); color: var(--accent2); }
+.chip-idiom { background: var(--accent-light); color: var(--accent); }
+.chip-total { background: var(--surface2); color: var(--text2); }
+.tabs-row { padding: 12px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 4px; }
+.tab { padding: 6px 16px; border-radius: 20px; border: 1px solid transparent; background: none; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+.tab:hover { background: var(--surface2); }
+.tab.active { background: var(--text); color: white; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { padding: 10px 24px; text-align: left; background: var(--surface2); color: var(--text3); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
+tbody td { padding: 12px 24px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--surface2); }
+.word-en { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--text); }
+.type-badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 500; margin-left: 6px; vertical-align: middle; }
+.badge-word { background: var(--accent2-light); color: var(--accent2); }
+.badge-idiom { background: var(--accent-light); color: var(--accent); }
+.word-ko { color: var(--text2); }
+.download-bar { padding: 16px 24px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.download-bar span { font-size: 12px; color: var(--text3); }
+.btn-dl { padding: 8px 16px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--surface); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+.btn-dl:hover { background: var(--text); color: white; border-color: var(--text); }
+
+/* Input mode panels */
+.input-panel { display: none; }
+.input-panel.show { display: block; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { height: auto; position: static; }
+  .main { padding: 20px; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">📖</div>
+        <h1>VocabExtract</h1>
+      </div>
+      <div class="logo-sub">수능 영어 단어장 자동 생성기</div>
+    </div>
+
+    <div class="sidebar-body">
+
+      <!-- AI Engine -->
+      <div>
+        <div class="sec-label">AI 엔진 선택</div>
+        <div class="engine-selector">
+          <button class="engine-btn active-claude" id="btnClaude" onclick="setEngine('claude')">
+            <span class="engine-dot"></span> Claude
+          </button>
+          <button class="engine-btn" id="btnGemini" onclick="setEngine('gemini')">
+            <span class="engine-dot"></span> Gemini
+          </button>
+        </div>
+        <div class="api-panel" id="apiPanel">
+          <div class="api-panel-title">🔑 Gemini API 키 입력</div>
+          <div class="api-input-row">
+            <input type="password" id="geminiKey" placeholder="AIza..." oninput="checkReady()">
+            <button class="btn-save-key" onclick="saveKey()">저장</button>
+          </div>
+          <div class="api-hint">무료 키 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></div>
+        </div>
+      </div>
+
+      <!-- Input Mode -->
+      <div>
+        <div class="sec-label">입력 방식</div>
+        <div class="mode-tabs">
+          <button class="mode-tab active" id="modeTabText" onclick="setMode('text')">✏️ 텍스트 붙여넣기</button>
+          <button class="mode-tab" id="modeTabFile" onclick="setMode('file')">📎 파일 업로드</button>
+        </div>
+      </div>
+
+      <!-- TEXT INPUT PANEL (메인) -->
+      <div class="input-panel show" id="panelText">
+        <div class="text-input-wrap">
+          <textarea class="paste-area" id="pasteArea"
+            placeholder="여기에 영어 지문을 붙여넣기 하세요.&#10;&#10;예) The phenomenon of cognitive dissonance occurs when a person holds contradictory beliefs simultaneously..."
+            oninput="onTextInput()"></textarea>
+          <div class="char-count" id="charCount">0자</div>
+          <div class="paste-actions">
+            <button class="btn-paste" onclick="pasteFromClipboard()">📋 클립보드에서 붙여넣기</button>
+            <button class="btn-clear-text" onclick="clearText()">지우기</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILE INPUT PANEL -->
+      <div class="input-panel" id="panelFile">
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-icon">📂</div>
+          <p>클릭하거나 파일을 드래그하세요</p>
+          <span>JPG · PNG · PDF 지원</span>
+        </div>
+        <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.pdf" style="display:none">
+        <div id="fileChip" style="display:none">
+          <div class="file-chip">
+            <span class="file-chip-icon" id="fileChipIcon">📄</span>
+            <span class="file-chip-name" id="fileChipName"></span>
+            <button class="file-chip-del" onclick="clearFile()">✕</button>
+          </div>
+          <img id="imgThumb" class="img-thumb" alt="미리보기">
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div>
+        <div class="sec-label">분석 설정</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="select-wrap">
+            <select id="levelFilter">
+              <option value="suneung">수능 빈출 단어 위주</option>
+              <option value="all">지문 속 모든 중요 단어</option>
+              <option value="both">둘 다 포함</option>
+            </select>
+          </div>
+          <div class="select-wrap">
+            <select id="outputFormat">
+              <option value="simple">영단어 | 한글뜻</option>
+              <option value="pos">영단어 | 품사 | 한글뜻</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exclude Words -->
+      <div>
+        <div class="sec-label">제외 단어</div>
+        <div class="tag-input-row">
+          <input type="text" id="excludeInput" placeholder="제외할 단어 입력" onkeydown="if(event.key==='Enter') addTag()">
+          <button class="btn-add-tag" onclick="addTag()">+ 추가</button>
+        </div>
+        <div class="tags-wrap" id="tagsWrap">
+          <span class="tag">the <button class="tag-del" onclick="removeTag(this)">×</button></span>
+          <span class="tag">a <button class="tag-del" onclick="removeTag(this)">×</button></span>
+          <span class="tag">an <button class="tag-del" onclick="removeTag(this)">×</button></span>
+          <span class="tag">this <button class="tag-del" onclick="removeTag(this)">×</button></span>
+          <span class="tag">that <button class="tag-del" onclick="removeTag(this)">×</button></span>
+          <span class="tag">is <button class="tag-del" onclick="removeTag(this)">×</button></span>
+          <span class="tag">are <button class="tag-del" onclick="removeTag(this)">×</button></span>
+        </div>
+      </div>
+
+      <div class="error-bar" id="errorBar"></div>
+
+      <button class="btn-run" id="btnRun" onclick="runAnalysis()" disabled>
+        ✦ AI 분석 시작
+      </button>
+
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📝</div>
+      <h2>영어 지문을 입력해주세요</h2>
+      <p>왼쪽에서 텍스트를 붙여넣거나<br>JPG / PDF 파일을 업로드하면<br>AI가 단어와 숙어를 자동으로 추출합니다</p>
+    </div>
+    <div class="progress-card" id="progressCard">
+      <div class="spinner"></div>
+      <div class="progress-text" id="progressText">AI가 분석 중입니다...</div>
+    </div>
+    <div class="result-card" id="resultCard">
+      <div class="result-header">
+        <div class="result-title">추출 결과</div>
+        <div class="stat-chips">
+          <span class="stat-chip chip-word" id="chipWord">단어 0</span>
+          <span class="stat-chip chip-idiom" id="chipIdiom">숙어 0</span>
+          <span class="stat-chip chip-total" id="chipTotal">전체 0</span>
+        </div>
+      </div>
+      <div class="tabs-row">
+        <button class="tab active" onclick="switchTab('all',this)">전체</button>
+        <button class="tab" onclick="switchTab('word',this)">단어만</button>
+        <button class="tab" onclick="switchTab('idiom',this)">숙어만</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:45%">영어</th>
+              <th style="width:55%">한글뜻</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="download-bar">
+        <span>다운로드</span>
+        <button class="btn-dl" onclick="downloadHTML()">📄 PDF용 HTML</button>
+        <button class="btn-dl" onclick="downloadTXT()">📝 HWP용 TXT</button>
+        <button class="btn-dl" onclick="downloadCSV()">📊 CSV</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+let engine = 'claude';
+let inputMode = 'text';
+let fileData = null;
+let fileType = null;
+let allItems = [];
+let currentTab = 'all';
+let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
+
+if (geminiApiKey) document.getElementById('geminiKey').value = geminiApiKey;
+
+// Engine
+function setEngine(e) {
+  engine = e;
+  document.getElementById('btnClaude').className = 'engine-btn' + (e==='claude' ? ' active-claude' : '');
+  document.getElementById('btnGemini').className = 'engine-btn' + (e==='gemini' ? ' active-gemini' : '');
+  document.getElementById('apiPanel').className = 'api-panel' + (e==='gemini' ? ' show' : '');
+  checkReady();
+}
+
+function saveKey() {
+  const key = document.getElementById('geminiKey').value.trim();
+  if (key) { localStorage.setItem('gemini_api_key', key); geminiApiKey = key; alert('저장되었습니다!'); }
+  checkReady();
+}
+
+// Input Mode
+function setMode(mode) {
+  inputMode = mode;
+  document.getElementById('modeTabText').className = 'mode-tab' + (mode==='text' ? ' active' : '');
+  document.getElementById('modeTabFile').className = 'mode-tab' + (mode==='file' ? ' active' : '');
+  document.getElementById('panelText').className = 'input-panel' + (mode==='text' ? ' show' : '');
+  document.getElementById('panelFile').className = 'input-panel' + (mode==='file' ? ' show' : '');
+  checkReady();
+}
+
+// Text input
+function onTextInput() {
+  const val = document.getElementById('pasteArea').value;
+  document.getElementById('charCount').textContent = val.length.toLocaleString() + '자';
+  checkReady();
+}
+
+async function pasteFromClipboard() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('pasteArea').value = text;
+    onTextInput();
+  } catch(e) {
+    alert('브라우저 붙여넣기 권한이 필요합니다.\nCtrl+V (또는 Cmd+V)로 직접 붙여넣기 해주세요.');
+  }
+}
+
+function clearText() {
+  document.getElementById('pasteArea').value = '';
+  onTextInput();
+}
+
+// File input
+const uploadZone = document.getElementById('uploadZone');
+const fileInput = document.getElementById('fileInput');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+uploadZone.addEventListener('drop', e => { e.preventDefault(); uploadZone.classList.remove('drag'); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(file) {
+  const allowed = ['image/jpeg','image/png','image/jpg','application/pdf'];
+  if (!allowed.includes(file.type)) { showError('JPG, PNG, PDF 파일만 지원됩니다.'); return; }
+  hideError();
+  const reader = new FileReader();
+  reader.onload = e => {
+    fileData = e.target.result.split(',')[1];
+    fileType = file.type;
+    document.getElementById('fileChipIcon').textContent = file.type === 'application/pdf' ? '📑' : '🖼️';
+    document.getElementById('fileChipName').textContent = file.name;
+    document.getElementById('fileChip').style.display = 'block';
+    const thumb = document.getElementById('imgThumb');
+    if (file.type !== 'application/pdf') { thumb.src = e.target.result; thumb.style.display = 'block'; }
+    else thumb.style.display = 'none';
+    checkReady();
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearFile() {
+  fileData = null; fileType = null;
+  document.getElementById('fileChip').style.display = 'none';
+  document.getElementById('imgThumb').style.display = 'none';
+  fileInput.value = '';
+  checkReady();
+}
+
+function checkReady() {
+  const hasKey = engine === 'claude' || document.getElementById('geminiKey').value.trim().length > 0;
+  let hasInput = false;
+  if (inputMode === 'text') hasInput = document.getElementById('pasteArea').value.trim().length > 10;
+  if (inputMode === 'file') hasInput = !!fileData;
+  document.getElementById('btnRun').disabled = !(hasInput && hasKey);
+}
+
+// Tags
+function addTag() {
+  const input = document.getElementById('excludeInput');
+  const val = input.value.trim().toLowerCase();
+  if (!val) return;
+  const wrap = document.getElementById('tagsWrap');
+  const existing = [...wrap.querySelectorAll('.tag')].map(t => t.firstChild.textContent.trim());
+  if (existing.includes(val)) { input.value = ''; return; }
+  const tag = document.createElement('span');
+  tag.className = 'tag';
+  tag.innerHTML = val + ' <button class="tag-del" onclick="removeTag(this)">×</button>';
+  wrap.appendChild(tag);
+  input.value = '';
+}
+function removeTag(btn) { btn.parentElement.remove(); }
+function getExcludeWords() {
+  return [...document.getElementById('tagsWrap').querySelectorAll('.tag')]
+    .map(t => t.firstChild.textContent.trim().toLowerCase());
+}
+
+function showError(msg) { const b = document.getElementById('errorBar'); b.textContent = '⚠ ' + msg; b.classList.add('show'); }
+function hideError() { document.getElementById('errorBar').classList.remove('show'); }
+
+// Analysis
+async function runAnalysis() {
+  hideError();
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('progressCard').classList.add('show');
+  document.getElementById('btnRun').disabled = true;
+
+  const level = document.getElementById('levelFilter').value;
+  const excludeWords = getExcludeWords();
+  const levelDesc = { suneung:'수능 빈출 어휘 위주로', all:'지문 속 모든 중요 단어를', both:'수능 빈출 단어와 지문의 모든 중요 단어를 모두' }[level];
+
+  const basePrompt = `수능 영어 전문가로서 아래 영어 텍스트를 분석해 ${levelDesc} 추출하세요.
+
+제외 단어: ${excludeWords.join(', ')}, I, am, is, are, was, were, be, been, he, she, it, we, they, you, my, your, his, her, our, their, a, an, the, this, that, and, or, but, in, on, at, to, for, of, do, did, can, will, would, have, has, go, get, very, also, just, not, so, if, as, with, from
+
+규칙:
+1. 위 제외 단어는 반드시 제외
+2. 단어(word)와 숙어(idiom, 2개 이상 단어의 관용표현) 모두 추출
+3. 중복 제거
+4. JSON만 출력 (마크다운 없이):
+{"items":[{"en":"단어","ko":"한글뜻","type":"word 또는 idiom","pos":"n/v/adj/adv"}]}`;
+
+  try {
+    let result;
+    if (engine === 'claude') {
+      result = await callClaude(basePrompt);
+    } else {
+      const key = document.getElementById('geminiKey').value.trim();
+      if (!key) throw new Error('Gemini API 키를 입력해주세요.');
+      result = await callGemini(basePrompt, key);
+    }
+
+    const clean = result.replace(/```json|```/g,'').trim();
+    let parsed;
+    try { parsed = JSON.parse(clean); } catch(e) { throw new Error('응답 파싱 오류. 다시 시도해주세요.'); }
+
+    allItems = parsed.items || [];
+    renderTable(allItems);
+    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('resultCard').classList.add('show');
+  } catch(e) {
+    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('emptyState').style.display = 'flex';
+    showError(e.message);
+  }
+  document.getElementById('btnRun').disabled = false;
+  checkReady();
+}
+
+async function callClaude(basePrompt) {
+  document.getElementById('progressText').textContent = 'Claude AI가 분석 중입니다...';
+  let content;
+  if (inputMode === 'text') {
+    const text = document.getElementById('pasteArea').value.trim();
+    content = [{ type:'text', text: basePrompt + '\n\n[분석할 텍스트]\n' + text }];
+  } else {
+    content = fileType === 'application/pdf'
+      ? [{ type:'document', source:{ type:'base64', media_type:'application/pdf', data:fileData } }, { type:'text', text: basePrompt }]
+      : [{ type:'image', source:{ type:'base64', media_type: fileType==='image/png'?'image/png':'image/jpeg', data:fileData } }, { type:'text', text: basePrompt }];
+  }
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{ role:'user', content }] })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error('Claude 오류: ' + data.error.message);
+  return data.content.map(i => i.text || '').join('');
+}
+
+async function callGemini(basePrompt, key) {
+  document.getElementById('progressText').textContent = 'Gemini AI가 분석 중입니다...';
+  let parts;
+  if (inputMode === 'text') {
+    const text = document.getElementById('pasteArea').value.trim();
+    parts = [{ text: basePrompt + '\n\n[분석할 텍스트]\n' + text }];
+  } else {
+    parts = [{ text: basePrompt }, { inline_data: { mime_type: fileType==='application/pdf'?'application/pdf':(fileType==='image/png'?'image/png':'image/jpeg'), data: fileData } }];
+  }
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ contents:[{ parts }] })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error('Gemini 오류: ' + data.error.message);
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+}
+
+// Render
+function renderTable(items) {
+  const words = items.filter(i => i.type === 'word');
+  const idioms = items.filter(i => i.type === 'idiom');
+  document.getElementById('chipWord').textContent = '단어 ' + words.length;
+  document.getElementById('chipIdiom').textContent = '숙어 ' + idioms.length;
+  document.getElementById('chipTotal').textContent = '전체 ' + items.length;
+  let filtered = items;
+  if (currentTab === 'word') filtered = words;
+  if (currentTab === 'idiom') filtered = idioms;
+  const showPos = document.getElementById('outputFormat').value === 'pos';
+  const body = document.getElementById('tableBody');
+  body.innerHTML = '';
+  filtered.forEach(item => {
+    const tr = document.createElement('tr');
+    const posText = showPos && item.pos ? ` <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;">[${item.pos}]</span>` : '';
+    const badge = item.type === 'idiom' ? '<span class="type-badge badge-idiom">숙어</span>' : '<span class="type-badge badge-word">단어</span>';
+    tr.innerHTML = `<td><span class="word-en">${item.en}</span>${badge}${posText}</td><td class="word-ko">${item.ko}</td>`;
+    body.appendChild(tr);
+  });
+}
+
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable(allItems);
+}
+
+// Downloads
+function getFilteredItems() {
+  if (currentTab === 'word') return allItems.filter(i=>i.type==='word');
+  if (currentTab === 'idiom') return allItems.filter(i=>i.type==='idiom');
+  return allItems;
+}
+
+function downloadHTML() {
+  if (!allItems.length) return;
+  const items = getFilteredItems();
+  const words = items.filter(i=>i.type==='word');
+  const idioms = items.filter(i=>i.type==='idiom');
+  let rows = words.map((w,i) => `<tr><td class="num">${i+1}</td><td class="en">${w.en}</td><td class="ko">${w.ko}</td></tr>`).join('');
+  let idiomRows = idioms.map((w,i) => `<tr><td class="num">${i+1}</td><td class="en">${w.en}</td><td class="ko">${w.ko}</td></tr>`).join('');
+  const html = `<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>수능 영어 단어장</title>
+<style>body{font-family:'Noto Sans KR',sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1916;}
+h1{font-size:22px;margin-bottom:4px;}.sub{color:#888;font-size:13px;margin-bottom:30px;}
+h2{font-size:16px;border-bottom:2px solid #1a1916;padding-bottom:6px;margin:24px 0 12px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:#f2f0eb;padding:8px 12px;text-align:left;font-weight:500;border-bottom:1px solid #ddd;}
+td{padding:9px 12px;border-bottom:1px solid #eee;}.num{color:#aaa;width:30px;}.en{font-family:monospace;font-weight:500;width:45%;}
+@media print{body{margin:20px;}}</style></head><body>
+<h1>📖 수능 영어 단어장</h1>
+<div class="sub">생성일: ${new Date().toLocaleDateString('ko-KR')} · 총 ${items.length}개 항목</div>
+${words.length?`<h2>단어 (${words.length}개)</h2><table><thead><tr><th>#</th><th>영단어</th><th>한글뜻</th></tr></thead><tbody>${rows}</tbody></table>`:''}
+${idioms.length?`<h2>숙어 (${idioms.length}개)</h2><table><thead><tr><th>#</th><th>숙어</th><th>한글뜻</th></tr></thead><tbody>${idiomRows}</tbody></table>`:''}
+</body></html>`;
+  const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='수능영어단어장.html'; a.click();
+  setTimeout(() => alert('브라우저에서 열고 Ctrl+P → PDF 저장하세요.'), 300);
+}
+
+function downloadTXT() {
+  if (!allItems.length) return;
+  const items = getFilteredItems();
+  const words = items.filter(i=>i.type==='word');
+  const idioms = items.filter(i=>i.type==='idiom');
+  let txt = '수능 영어 단어장\n생성일: ' + new Date().toLocaleDateString('ko-KR') + '\n' + '='.repeat(40) + '\n\n';
+  if (words.length) { txt += '[ 단어 ]\n'; words.forEach(w => { txt += w.en + '\t' + w.ko + '\n'; }); txt += '\n'; }
+  if (idioms.length) { txt += '[ 숙어 ]\n'; idioms.forEach(w => { txt += w.en + '\t' + w.ko + '\n'; }); }
+  const blob = new Blob(['\uFEFF'+txt], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='수능영어단어장.txt'; a.click();
+}
+
+function downloadCSV() {
+  if (!allItems.length) return;
+  const items = getFilteredItems();
+  let csv = '\uFEFF영단어,한글뜻,유형\n';
+  items.forEach(w => { csv += `"${w.en}","${w.ko}","${w.type==='idiom'?'숙어':'단어'}"\n`; });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='수능영어단어장.csv'; a.click();
+}
+</script>
+</body>
+</html>
