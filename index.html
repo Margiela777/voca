@@ -221,7 +221,7 @@ tbody tr:hover td { background: var(--surface2); }
       <div class="input-panel show" id="panelText">
         <textarea class="paste-area" id="pasteArea"
           placeholder="여기에 영어 지문을 Ctrl+V 로 붙여넣기 하세요.&#10;&#10;예시) The phenomenon of cognitive dissonance occurs when a person simultaneously holds contradictory beliefs. This psychological concept was first introduced by Leon Festinger..."
-          oninput="onTextChange()"></textarea>
+          oninput="onTextChange()" onkeyup="onTextChange()" onpaste="setTimeout(onTextChange,100)" onchange="onTextChange()"></textarea>
         <div class="paste-footer">
           <span class="char-count" id="charCount">0자 입력됨</span>
           <button class="btn-clear" onclick="clearText()">지우기</button>
@@ -353,7 +353,9 @@ function clearFile() {
 }
 
 function checkReady() {
-  var ok = inputMode === 'text' ? document.getElementById('pasteArea').value.trim().length > 5 : fileData !== null;
+  var area = document.getElementById("pasteArea");
+  var txt = area ? (area.value || area.textContent || area.innerText || "") : "";
+  var ok = inputMode === "text" ? txt.trim().length > 5 : fileData !== null;
   document.getElementById('btnRun').disabled = !ok;
 }
 
@@ -533,6 +535,18 @@ function downloadPDF() {
   };
   document.head.appendChild(s1);
 }
+
+setInterval(function() {
+  var area = document.getElementById('pasteArea');
+  if (!area) return;
+  var txt = area.value || '';
+  if (txt.trim().length > 5) {
+    document.getElementById('charCount').textContent = txt.length.toLocaleString() + '자 입력됨';
+    document.getElementById('btnRun').disabled = false;
+  } else {
+    document.getElementById('btnRun').disabled = true;
+  }
+}, 200);
 </script>
 </body>
 </html>
