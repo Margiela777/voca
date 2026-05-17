@@ -19,8 +19,8 @@
   --accent-light: #EAF2EC;
   --accent2: #1B3A6B;
   --accent2-light: #E8EEF7;
-  --gemini: #C9470A;
-  --gemini-light: #FDF0EA;
+  --gemini: #1A73E8;
+  --gemini-light: #E8F0FE;
   --danger: #B91C1C;
   --danger-light: #FEF2F2;
   --radius: 10px;
@@ -29,19 +29,10 @@
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; font-size: 14px; line-height: 1.6; }
-
-/* 전체 레이아웃: 좌 사이드바 + 우 메인 */
 .layout { display: grid; grid-template-columns: 300px 1fr; height: 100vh; }
 
-/* ── 좌측 사이드바 ── */
-.sidebar {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  height: 100vh;
-}
+/* 사이드바 */
+.sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; height: 100vh; }
 .sidebar-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .logo { display: flex; align-items: center; gap: 9px; margin-bottom: 3px; }
 .logo-icon { width: 32px; height: 32px; background: var(--text); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-size: 15px; flex-shrink: 0; }
@@ -50,34 +41,23 @@ body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: va
 .sidebar-body { padding: 16px 20px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
 .sec-label { font-size: 10px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
 
-/* 엔진 토글 */
-.engine-selector { background: var(--surface2); border-radius: var(--radius); padding: 3px; display: flex; gap: 2px; }
-.engine-btn { flex: 1; padding: 7px 8px; border: none; background: transparent; border-radius: 7px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; }
-.engine-btn.active-claude { background: var(--surface); color: var(--accent); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.engine-btn.active-gemini { background: var(--surface); color: var(--gemini); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.engine-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+/* AI 엔진 표시 */
+.engine-badge { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--gemini-light); border: 1px solid #AECBFA; border-radius: var(--radius); }
+.engine-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gemini); flex-shrink: 0; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+.engine-name { font-size: 13px; font-weight: 500; color: var(--gemini); }
+.engine-free { font-size: 10px; color: #1B66C9; background: white; border: 1px solid #AECBFA; border-radius: 20px; padding: 1px 7px; margin-left: auto; }
 
-/* Gemini API */
-.api-panel { background: var(--gemini-light); border: 1px solid #F0C4A8; border-radius: var(--radius); padding: 11px; display: none; margin-top: 7px; }
-.api-panel.show { display: block; }
-.api-panel-title { font-size: 11px; font-weight: 500; color: var(--gemini); margin-bottom: 6px; }
-.api-row { display: flex; gap: 5px; }
-.api-row input { flex: 1; font-family: 'DM Mono', monospace; font-size: 11px; padding: 6px 9px; border: 1px solid #F0C4A8; border-radius: 7px; background: white; color: var(--text); min-width: 0; }
-.api-row input:focus { outline: none; border-color: var(--gemini); }
-.btn-save { padding: 6px 10px; background: var(--gemini); color: white; border: none; border-radius: 7px; font-size: 11px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; white-space: nowrap; }
-.api-hint { font-size: 10px; color: #A05A3A; margin-top: 5px; }
-.api-hint a { color: var(--gemini); }
-
-/* 설정 셀렉트 */
+/* 설정 */
 select { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); appearance: none; -webkit-appearance: none; cursor: pointer; }
-select:focus { outline: none; border-color: var(--accent); }
+select:focus { outline: none; border-color: var(--gemini); }
 .select-wrap { position: relative; }
 .select-wrap::after { content: '▾'; position: absolute; right: 9px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--text3); pointer-events: none; }
 
-/* 제외 단어 태그 */
+/* 제외 단어 */
 .tag-input-row { display: flex; gap: 5px; }
 .tag-input-row input { flex: 1; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); min-width: 0; }
-.tag-input-row input:focus { outline: none; border-color: var(--accent); }
+.tag-input-row input:focus { outline: none; border-color: var(--gemini); }
 .btn-add { padding: 7px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; cursor: pointer; color: var(--text2); font-family: 'Noto Sans KR', sans-serif; white-space: nowrap; }
 .btn-add:hover { background: var(--border); }
 .tags-wrap { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
@@ -85,122 +65,55 @@ select:focus { outline: none; border-color: var(--accent); }
 .tag-del { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 12px; padding: 0; line-height: 1; }
 
 /* 실행 버튼 */
-.btn-run { width: 100%; padding: 12px; background: var(--text); color: white; border: none; border-radius: var(--radius); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.2s; margin-top: auto; }
-.btn-run:hover:not(:disabled) { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.btn-run { width: 100%; padding: 12px; background: var(--gemini); color: white; border: none; border-radius: var(--radius); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.2s; margin-top: auto; }
+.btn-run:hover:not(:disabled) { background: #1557B0; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,115,232,0.3); }
 .btn-run:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
 
-/* 에러 */
 .error-bar { padding: 9px 12px; background: var(--danger-light); border: 1px solid #FECACA; border-radius: var(--radius); color: var(--danger); font-size: 12px; display: none; }
 .error-bar.show { display: block; }
 
-/* ── 우측 메인 영역 ── */
-.main {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  height: 100vh;
-  overflow: hidden;
-}
+/* 메인 */
+.main { display: grid; grid-template-rows: auto 1fr; height: 100vh; overflow: hidden; }
 
-/* 상단: 입력 영역 */
-.input-area {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.input-tabs {
-  display: flex;
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px;
-  gap: 0;
-}
-
-.input-tab {
-  padding: 14px 20px;
-  border: none;
-  background: none;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 13px;
-  color: var(--text3);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: all 0.15s;
-}
+/* 입력 탭 */
+.input-area { background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.input-tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 20px; }
+.input-tab { padding: 13px 18px; border: none; background: none; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
 .input-tab:hover { color: var(--text2); }
-.input-tab.active { color: var(--text); font-weight: 500; border-bottom-color: var(--text); }
-
-/* 텍스트 패널 */
+.input-tab.active { color: var(--text); font-weight: 500; border-bottom-color: var(--gemini); }
 .input-panel { display: none; padding: 16px 20px; }
 .input-panel.show { display: flex; flex-direction: column; gap: 8px; }
-
-.paste-area {
-  width: 100%;
-  height: 180px;
-  padding: 14px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 13px;
-  color: var(--text);
-  background: var(--bg);
-  resize: none;
-  line-height: 1.8;
-  transition: border-color 0.15s;
-}
-.paste-area:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+.paste-area { width: 100%; height: 170px; padding: 13px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text); background: var(--bg); resize: none; line-height: 1.8; transition: border-color 0.15s; }
+.paste-area:focus { outline: none; border-color: var(--gemini); background: var(--surface); }
 .paste-area::placeholder { color: var(--text3); font-size: 12px; }
-
 .paste-footer { display: flex; align-items: center; justify-content: space-between; }
 .char-count { font-size: 11px; color: var(--text3); }
-.paste-btns { display: flex; gap: 6px; }
-.btn-sm { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
-.btn-sm:hover { background: var(--surface2); }
-.btn-sm.primary { background: var(--accent-light); border-color: #B8D9C0; color: var(--accent); font-weight: 500; }
-.btn-sm.primary:hover { background: #D4ECD8; }
-
-/* 파일 업로드 패널 */
-.upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--radius); padding: 28px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); display: flex; align-items: center; justify-content: center; gap: 16px; }
-.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-light); }
-.upload-left { font-size: 32px; }
+.btn-clear { background: none; border: none; font-size: 11px; color: var(--text3); cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.btn-clear:hover { color: var(--danger); }
+.upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--radius); padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); display: flex; align-items: center; justify-content: center; gap: 14px; }
+.upload-zone:hover, .upload-zone.drag { border-color: var(--gemini); background: var(--gemini-light); }
+.upload-icon { font-size: 28px; }
 .upload-right p { font-size: 13px; color: var(--text2); font-weight: 500; margin-bottom: 2px; }
 .upload-right span { font-size: 11px; color: var(--text3); }
-.file-chip { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--accent-light); border: 1px solid #B8D9C0; border-radius: var(--radius); margin-top: 10px; }
+.file-chip { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: var(--accent-light); border: 1px solid #B8D9C0; border-radius: var(--radius); margin-top: 8px; }
 .file-chip-name { font-size: 12px; color: var(--accent); flex: 1; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .file-chip-del { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; }
 .img-thumb { width: 100%; max-height: 80px; object-fit: cover; border-radius: 7px; margin-top: 8px; display: none; border: 1px solid var(--border); }
 
-/* 하단: 결과 영역 */
-.result-area {
-  overflow-y: auto;
-  padding: 20px;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* 빈 상태 */
+/* 결과 */
+.result-area { overflow-y: auto; padding: 20px; background: var(--bg); display: flex; flex-direction: column; gap: 16px; }
 .empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text3); padding: 40px; }
-.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.35; }
+.empty-icon { font-size: 44px; margin-bottom: 14px; opacity: 0.3; }
 .empty-state h2 { font-size: 16px; color: var(--text2); font-weight: 500; margin-bottom: 6px; }
 .empty-state p { font-size: 12px; line-height: 1.9; }
-
-/* 로딩 */
 .progress-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; text-align: center; display: none; box-shadow: var(--shadow); }
 .progress-card.show { display: block; }
-.spinner { width: 32px; height: 32px; border: 2.5px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin 0.75s linear infinite; margin: 0 auto 14px; }
+.spinner { width: 32px; height: 32px; border: 2.5px solid var(--border); border-top-color: var(--gemini); border-radius: 50%; animation: spin 0.75s linear infinite; margin: 0 auto 14px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .progress-text { font-size: 13px; color: var(--text2); }
-
-/* 결과 카드 */
 .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); display: none; }
 .result-card.show { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
 .result-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .result-title { font-size: 14px; font-weight: 500; }
 .stat-chips { display: flex; gap: 6px; }
@@ -208,13 +121,11 @@ select:focus { outline: none; border-color: var(--accent); }
 .chip-word { background: var(--accent2-light); color: var(--accent2); }
 .chip-idiom { background: var(--accent-light); color: var(--accent); }
 .chip-total { background: var(--surface2); color: var(--text2); }
-
 .tabs-row { padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 4px; }
 .tab { padding: 5px 13px; border-radius: 20px; border: 1px solid transparent; background: none; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
 .tab:hover { background: var(--surface2); }
 .tab.active { background: var(--text); color: white; }
-
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
 thead th { padding: 9px 20px; text-align: left; background: var(--surface2); color: var(--text3); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
 tbody td { padding: 10px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 tbody tr:last-child td { border-bottom: none; }
@@ -224,28 +135,19 @@ tbody tr:hover td { background: var(--surface2); }
 .badge-word { background: var(--accent2-light); color: var(--accent2); }
 .badge-idiom { background: var(--accent-light); color: var(--accent); }
 .word-ko { color: var(--text2); }
-
 .dl-bar { padding: 12px 20px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
 .dl-bar span { font-size: 11px; color: var(--text3); }
-.btn-dl { padding: 6px 13px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--surface); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
+.btn-dl { padding: 7px 14px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--surface); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
 .btn-dl:hover { background: var(--text); color: white; border-color: var(--text); }
-
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
-
-@media (max-width: 860px) {
-  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .sidebar { height: auto; overflow-y: visible; }
-  .main { height: auto; }
-  body { overflow: auto; height: auto; }
-}
+@media (max-width: 860px) { .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } .sidebar { height: auto; } .main { height: auto; } body { overflow: auto; height: auto; } }
 </style>
 </head>
 <body>
 <div class="layout">
 
-  <!-- ── 좌측 사이드바: 설정 영역 ── -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo">
@@ -254,31 +156,17 @@ tbody tr:hover td { background: var(--surface2); }
       </div>
       <div class="logo-sub">수능 영어 단어장 자동 생성기</div>
     </div>
-
     <div class="sidebar-body">
 
-      <!-- AI 엔진 -->
       <div>
-        <div class="sec-label">AI 엔진 선택</div>
-        <div class="engine-selector">
-          <button class="engine-btn active-claude" id="btnClaude" onclick="setEngine('claude')">
-            <span class="engine-dot"></span> Claude
-          </button>
-          <button class="engine-btn" id="btnGemini" onclick="setEngine('gemini')">
-            <span class="engine-dot"></span> Gemini
-          </button>
-        </div>
-        <div class="api-panel" id="apiPanel">
-          <div class="api-panel-title">🔑 Gemini API 키</div>
-          <div class="api-row">
-            <input type="password" id="geminiKey" placeholder="AIza..." oninput="checkReady()">
-            <button class="btn-save" onclick="saveKey()">저장</button>
-          </div>
-          <div class="api-hint">무료 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a></div>
+        <div class="sec-label">AI 엔진</div>
+        <div class="engine-badge">
+          <div class="engine-dot"></div>
+          <span class="engine-name">Gemini 2.5 Flash</span>
+          <span class="engine-free">무료</span>
         </div>
       </div>
 
-      <!-- 분석 설정 -->
       <div>
         <div class="sec-label">분석 설정</div>
         <div style="display:flex;flex-direction:column;gap:7px;">
@@ -298,7 +186,6 @@ tbody tr:hover td { background: var(--surface2); }
         </div>
       </div>
 
-      <!-- 제외 단어 -->
       <div>
         <div class="sec-label">제외 단어</div>
         <div class="tag-input-row">
@@ -325,36 +212,24 @@ tbody tr:hover td { background: var(--surface2); }
     </div>
   </aside>
 
-  <!-- ── 우측 메인: 입력 + 결과 ── -->
   <main class="main">
-
-    <!-- 상단: 입력 탭 -->
     <div class="input-area">
       <div class="input-tabs">
         <button class="input-tab active" id="tabText" onclick="setMode('text')">✏️ 텍스트 붙여넣기</button>
         <button class="input-tab" id="tabFile" onclick="setMode('file')">📎 파일 업로드</button>
       </div>
-
-      <!-- 텍스트 패널 -->
       <div class="input-panel show" id="panelText">
-        <textarea
-          class="paste-area"
-          id="pasteArea"
-          placeholder="여기에 영어 지문을 Ctrl+V 로 붙여넣기 하세요.&#10;&#10;예시) The phenomenon of cognitive dissonance occurs when a person simultaneously holds contradictory beliefs. This psychological concept was first introduced by Leon Festinger in 1957..."
-          oninput="onTextChange()"
-        ></textarea>
+        <textarea class="paste-area" id="pasteArea"
+          placeholder="여기에 영어 지문을 Ctrl+V 로 붙여넣기 하세요.&#10;&#10;예시) The phenomenon of cognitive dissonance occurs when a person simultaneously holds contradictory beliefs. This psychological concept was first introduced by Leon Festinger..."
+          oninput="onTextChange()"></textarea>
         <div class="paste-footer">
           <span class="char-count" id="charCount">0자 입력됨</span>
-          <div class="paste-btns">
-            <button class="btn-sm" onclick="clearText()">지우기</button>
-          </div>
+          <button class="btn-clear" onclick="clearText()">지우기</button>
         </div>
       </div>
-
-      <!-- 파일 패널 -->
       <div class="input-panel" id="panelFile">
         <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-          <div class="upload-left">📂</div>
+          <div class="upload-icon">📂</div>
           <div class="upload-right">
             <p>클릭하거나 파일을 드래그하세요</p>
             <span>JPG · PNG · PDF 지원</span>
@@ -372,20 +247,16 @@ tbody tr:hover td { background: var(--surface2); }
       </div>
     </div>
 
-    <!-- 하단: 결과 영역 -->
     <div class="result-area" id="resultArea">
-
       <div class="empty-state" id="emptyState">
         <div class="empty-icon">📝</div>
         <h2>결과가 여기에 표시됩니다</h2>
-        <p>위 입력창에 영어 지문을 붙여넣고<br>왼쪽 설정을 확인한 뒤<br><strong>AI 분석 시작</strong> 버튼을 누르세요</p>
+        <p>위 입력창에 영어 지문을 붙여넣고<br>왼쪽 설정 확인 후<br><strong>AI 분석 시작</strong> 버튼을 누르세요</p>
       </div>
-
       <div class="progress-card" id="progressCard">
         <div class="spinner"></div>
-        <div class="progress-text" id="progressText">AI가 분석 중입니다...</div>
+        <div class="progress-text" id="progressText">Gemini AI가 분석 중입니다...</div>
       </div>
-
       <div class="result-card" id="resultCard">
         <div class="result-header">
           <div class="result-title">추출 결과</div>
@@ -402,12 +273,7 @@ tbody tr:hover td { background: var(--surface2); }
         </div>
         <div style="overflow-x:auto;">
           <table>
-            <thead>
-              <tr>
-                <th style="width:45%">영어</th>
-                <th style="width:55%">한글뜻</th>
-              </tr>
-            </thead>
+            <thead><tr><th style="width:46%">영어</th><th style="width:54%">한글뜻</th></tr></thead>
             <tbody id="tableBody"></tbody>
           </table>
         </div>
@@ -417,34 +283,20 @@ tbody tr:hover td { background: var(--surface2); }
           <button class="btn-dl" onclick="downloadPDF()">📄 PDF</button>
         </div>
       </div>
-
     </div>
   </main>
 </div>
 
 <script>
-var engine = 'claude';
+// ★★★ 여기에 Gemini API 키를 입력하세요 ★★★
+var GEMINI_API_KEY = "AIzaSyCY2EHM_3P408Pny2qDDGOdBSHNBklm_Sc';
+// ★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
 var inputMode = 'text';
 var fileData = null;
 var fileType = null;
 var allItems = [];
 var currentTab = 'all';
-
-try { var saved = localStorage.getItem('gemini_key'); if (saved) document.getElementById('geminiKey').value = saved; } catch(e) {}
-
-function setEngine(e) {
-  engine = e;
-  document.getElementById('btnClaude').className = 'engine-btn' + (e==='claude' ? ' active-claude' : '');
-  document.getElementById('btnGemini').className = 'engine-btn' + (e==='gemini' ? ' active-gemini' : '');
-  document.getElementById('apiPanel').className = 'api-panel' + (e==='gemini' ? ' show' : '');
-  checkReady();
-}
-
-function saveKey() {
-  var key = document.getElementById('geminiKey').value.trim();
-  if (key) { try { localStorage.setItem('gemini_key', key); } catch(e) {} alert('저장되었습니다!'); }
-  checkReady();
-}
 
 function setMode(mode) {
   inputMode = mode;
@@ -456,8 +308,8 @@ function setMode(mode) {
 }
 
 function onTextChange() {
-  var val = document.getElementById('pasteArea').value;
-  document.getElementById('charCount').textContent = val.length.toLocaleString() + '자 입력됨';
+  var v = document.getElementById('pasteArea').value;
+  document.getElementById('charCount').textContent = v.length.toLocaleString() + '자 입력됨';
   checkReady();
 }
 
@@ -469,27 +321,27 @@ function clearText() {
 
 var uploadZone = document.getElementById('uploadZone');
 var fileInput = document.getElementById('fileInput');
-uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); uploadZone.classList.add('drag'); });
-uploadZone.addEventListener('dragleave', function() { uploadZone.classList.remove('drag'); });
-uploadZone.addEventListener('drop', function(e) { e.preventDefault(); uploadZone.classList.remove('drag'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
-fileInput.addEventListener('change', function(e) { if (e.target.files[0]) handleFile(e.target.files[0]); });
+uploadZone.addEventListener('dragover', function(e){ e.preventDefault(); uploadZone.classList.add('drag'); });
+uploadZone.addEventListener('dragleave', function(){ uploadZone.classList.remove('drag'); });
+uploadZone.addEventListener('drop', function(e){ e.preventDefault(); uploadZone.classList.remove('drag'); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', function(e){ if(e.target.files[0]) handleFile(e.target.files[0]); });
 
 function handleFile(file) {
-  var allowed = ['image/jpeg','image/png','image/jpg','application/pdf'];
-  if (allowed.indexOf(file.type) === -1) { showError('JPG, PNG, PDF 파일만 지원됩니다.'); return; }
+  var ok = ['image/jpeg','image/png','image/jpg','application/pdf'];
+  if (ok.indexOf(file.type) === -1) { showError('JPG, PNG, PDF 파일만 지원됩니다.'); return; }
   hideError();
-  var reader = new FileReader();
-  reader.onload = function(e) {
+  var r = new FileReader();
+  r.onload = function(e) {
     fileData = e.target.result.split(',')[1];
     fileType = file.type;
     document.getElementById('fileChipIcon').textContent = file.type==='application/pdf' ? '📑' : '🖼️';
     document.getElementById('fileChipName').textContent = file.name;
     document.getElementById('fileChip').style.display = 'block';
-    var thumb = document.getElementById('imgThumb');
-    if (file.type !== 'application/pdf') { thumb.src = e.target.result; thumb.style.display = 'block'; } else { thumb.style.display = 'none'; }
+    var t = document.getElementById('imgThumb');
+    if (file.type !== 'application/pdf') { t.src = e.target.result; t.style.display = 'block'; } else { t.style.display = 'none'; }
     checkReady();
   };
-  reader.readAsDataURL(file);
+  r.readAsDataURL(file);
 }
 
 function clearFile() {
@@ -501,37 +353,38 @@ function clearFile() {
 }
 
 function checkReady() {
-  var hasKey = engine === 'claude' || document.getElementById('geminiKey').value.trim().length > 0;
-  var hasInput = inputMode === 'text' ? document.getElementById('pasteArea').value.trim().length > 5 : fileData !== null;
-  document.getElementById('btnRun').disabled = !(hasInput && hasKey);
+  var ok = inputMode === 'text' ? document.getElementById('pasteArea').value.trim().length > 5 : fileData !== null;
+  document.getElementById('btnRun').disabled = !ok;
 }
 
 function addTag() {
-  var input = document.getElementById('excludeInput');
-  var val = input.value.trim().toLowerCase();
+  var inp = document.getElementById('excludeInput');
+  var val = inp.value.trim().toLowerCase();
   if (!val) return;
   var wrap = document.getElementById('tagsWrap');
-  var tags = wrap.querySelectorAll('.tag');
   var existing = [];
-  for (var i = 0; i < tags.length; i++) existing.push(tags[i].firstChild.textContent.trim());
-  if (existing.indexOf(val) !== -1) { input.value = ''; return; }
+  wrap.querySelectorAll('.tag').forEach(function(t){ existing.push(t.firstChild.textContent.trim()); });
+  if (existing.indexOf(val) !== -1) { inp.value = ''; return; }
   var tag = document.createElement('span');
   tag.className = 'tag';
   tag.innerHTML = val + ' <button class="tag-del" onclick="removeTag(this)">×</button>';
   wrap.appendChild(tag);
-  input.value = '';
+  inp.value = '';
 }
 function removeTag(btn) { btn.parentElement.remove(); }
 function getExcludeWords() {
-  var tags = document.getElementById('tagsWrap').querySelectorAll('.tag');
   var words = [];
-  for (var i = 0; i < tags.length; i++) words.push(tags[i].firstChild.textContent.trim().toLowerCase());
+  document.getElementById('tagsWrap').querySelectorAll('.tag').forEach(function(t){ words.push(t.firstChild.textContent.trim().toLowerCase()); });
   return words;
 }
-function showError(msg) { var b = document.getElementById('errorBar'); b.textContent = '⚠ ' + msg; b.classList.add('show'); }
+function showError(msg) { var b = document.getElementById('errorBar'); b.textContent = '⚠ '+msg; b.classList.add('show'); }
 function hideError() { document.getElementById('errorBar').classList.remove('show'); }
 
 function runAnalysis() {
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+    showError('API 키가 설정되지 않았습니다. index.html 파일에서 키를 입력해주세요.');
+    return;
+  }
   hideError();
   document.getElementById('emptyState').style.display = 'none';
   document.getElementById('resultCard').classList.remove('show');
@@ -539,81 +392,40 @@ function runAnalysis() {
   document.getElementById('btnRun').disabled = true;
 
   var level = document.getElementById('levelFilter').value;
-  var excludeWords = getExcludeWords();
-  var levelDesc = { suneung:'수능 빈출 어휘 위주로', all:'지문 속 모든 중요 단어를', both:'수능 빈출과 모든 중요 단어를 모두' }[level];
+  var ex = getExcludeWords();
+  var ldesc = {suneung:'수능 빈출 어휘 위주로', all:'지문 속 모든 중요 단어를', both:'수능 빈출과 모든 중요 단어를 모두'}[level];
 
-  var prompt = '수능 영어 전문가로서 아래 영어 텍스트를 분석해 ' + levelDesc + ' 추출하세요.\n\n'
-    + '반드시 제외: ' + excludeWords.join(', ') + ', I, am, is, are, was, were, be, been, he, she, it, we, they, you, my, your, his, her, our, their, a, an, the, this, that, and, or, but, in, on, at, to, for, of, do, did, can, will, would, have, has, go, get, very, also, just, not, so, if, as, with, from, by, up, out, one, two, all, some, such\n\n'
-    + '규칙:\n1. 위 단어 절대 포함 금지\n2. 단어(word)와 숙어(idiom) 모두 추출\n3. 중복 제거\n4. JSON만 출력(마크다운 없이):\n{"items":[{"en":"단어","ko":"한글뜻","type":"word 또는 idiom","pos":"n/v/adj/adv"}]}';
+  var prompt = '수능 영어 전문가로서 아래 영어 텍스트를 분석해 '+ldesc+' 추출하세요.\n\n'
+    +'반드시 제외: '+ex.join(', ')+', I, am, is, are, was, were, be, been, he, she, it, we, they, you, my, your, his, her, our, their, a, an, the, this, that, and, or, but, in, on, at, to, for, of, do, did, can, will, would, have, has, go, get, very, also, just, not, so, if, as, with, from, by, up, out\n\n'
+    +'규칙:\n1. 제외 단어 절대 포함 금지\n2. 단어(word)와 숙어(idiom) 모두 추출\n3. 중복 제거\n4. JSON만 출력(마크다운 없이):\n{"items":[{"en":"단어","ko":"한글뜻","type":"word 또는 idiom","pos":"n/v/adj/adv"}]}';
 
-  if (engine === 'claude') callClaude(prompt);
-  else {
-    var key = document.getElementById('geminiKey').value.trim();
-    if (!key) { showError('Gemini API 키를 입력해주세요.'); document.getElementById('progressCard').classList.remove('show'); document.getElementById('btnRun').disabled = false; checkReady(); return; }
-    callGemini(prompt, key);
-  }
-}
-
-function getContent(prompt) {
+  var parts;
   if (inputMode === 'text') {
-    return [{ type:'text', text: prompt + '\n\n[분석할 텍스트]\n' + document.getElementById('pasteArea').value.trim() }];
+    parts = [{ text: prompt + '\n\n[분석할 텍스트]\n' + document.getElementById('pasteArea').value.trim() }];
   } else {
-    if (fileType === 'application/pdf') return [{ type:'document', source:{ type:'base64', media_type:'application/pdf', data:fileData } }, { type:'text', text:prompt }];
-    return [{ type:'image', source:{ type:'base64', media_type: fileType==='image/png'?'image/png':'image/jpeg', data:fileData } }, { type:'text', text:prompt }];
+    parts = [{ text: prompt }, { inline_data: { mime_type: fileType==='application/pdf'?'application/pdf':(fileType==='image/png'?'image/png':'image/jpeg'), data: fileData } }];
   }
-}
 
-function callClaude(prompt) {
-  document.getElementById('progressText').textContent = 'Claude AI가 분석 중입니다...';
-  fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, messages:[{ role:'user', content: getContent(prompt) }] })
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_API_KEY, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: parts }] })
   })
-  .then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d.error) throw new Error('Claude 오류: ' + d.error.message);
-    handleResult(d.content.map(function(i){ return i.text||''; }).join(''));
-  })
-  .catch(function(e) { handleError(e.message); });
-}
-
-function callGemini(prompt, key) {
-  document.getElementById('progressText').textContent = 'Gemini AI가 분석 중입니다...';
-  var parts = inputMode === 'text'
-    ? [{ text: prompt + '\n\n[분석할 텍스트]\n' + document.getElementById('pasteArea').value.trim() }]
-    : [{ text:prompt }, { inline_data:{ mime_type: fileType==='application/pdf'?'application/pdf':(fileType==='image/png'?'image/png':'image/jpeg'), data:fileData } }];
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+key, {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ contents:[{ parts:parts }] })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(d) {
+  .then(function(r){ return r.json(); })
+  .then(function(d){
     if (d.error) throw new Error('Gemini 오류: ' + d.error.message);
-    var text = d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0] ? d.candidates[0].content.parts[0].text : '';
-    handleResult(text);
+    var txt = d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts && d.candidates[0].content.parts[0] ? d.candidates[0].content.parts[0].text : '';
+    var clean = txt.replace(/```json|```/g,'').trim();
+    var parsed;
+    try { parsed = JSON.parse(clean); } catch(e) { throw new Error('응답 파싱 오류. 다시 시도해주세요.'); }
+    allItems = parsed.items || [];
+    renderTable(allItems);
+    document.getElementById('progressCard').classList.remove('show');
+    document.getElementById('resultCard').classList.add('show');
+    document.getElementById('resultArea').scrollTop = 0;
   })
-  .catch(function(e) { handleError(e.message); });
-}
-
-function handleResult(text) {
-  var clean = text.replace(/```json|```/g,'').trim();
-  var parsed;
-  try { parsed = JSON.parse(clean); } catch(e) { handleError('응답 파싱 오류. 다시 시도해주세요.'); return; }
-  allItems = parsed.items || [];
-  renderTable(allItems);
-  document.getElementById('progressCard').classList.remove('show');
-  document.getElementById('resultCard').classList.add('show');
-  document.getElementById('resultArea').scrollTop = 0;
-  document.getElementById('btnRun').disabled = false;
-  checkReady();
-}
-
-function handleError(msg) {
-  document.getElementById('progressCard').classList.remove('show');
-  document.getElementById('emptyState').style.display = 'flex';
-  showError(msg);
-  document.getElementById('btnRun').disabled = false;
-  checkReady();
+  .catch(function(e){ document.getElementById('progressCard').classList.remove('show'); document.getElementById('emptyState').style.display = 'flex'; showError(e.message); })
+  .finally(function(){ document.getElementById('btnRun').disabled = false; checkReady(); });
 }
 
 function renderTable(items) {
@@ -626,11 +438,11 @@ function renderTable(items) {
   var showPos = document.getElementById('outputFormat').value === 'pos';
   var body = document.getElementById('tableBody');
   body.innerHTML = '';
-  filtered.forEach(function(item) {
+  filtered.forEach(function(item){
     var tr = document.createElement('tr');
-    var posText = showPos && item.pos ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">['+item.pos+']</span>' : '';
+    var pos = showPos && item.pos ? '<span style="font-size:10px;color:#9E9B95;margin-left:3px;">['+item.pos+']</span>' : '';
     var badge = item.type==='idiom' ? '<span class="type-badge badge-idiom">숙어</span>' : '<span class="type-badge badge-word">단어</span>';
-    tr.innerHTML = '<td><span class="word-en">'+item.en+'</span>'+badge+posText+'</td><td class="word-ko">'+item.ko+'</td>';
+    tr.innerHTML = '<td><span class="word-en">'+item.en+'</span>'+badge+pos+'</td><td class="word-ko">'+item.ko+'</td>';
     body.appendChild(tr);
   });
 }
@@ -643,183 +455,83 @@ function switchTab(tab, btn) {
 }
 
 function getFiltered() {
-  return currentTab==='word' ? allItems.filter(function(i){ return i.type==='word'; }) : currentTab==='idiom' ? allItems.filter(function(i){ return i.type==='idiom'; }) : allItems;
+  return currentTab==='word' ? allItems.filter(function(i){ return i.type==='word'; })
+       : currentTab==='idiom' ? allItems.filter(function(i){ return i.type==='idiom'; })
+       : allItems;
 }
 
-// ── DOCX 다운로드 (한글/Word 호환) ──
 function downloadDOCX() {
   if (!allItems.length) return;
   var items = getFiltered();
   var words = items.filter(function(i){ return i.type==='word'; });
   var idioms = items.filter(function(i){ return i.type==='idiom'; });
   var date = new Date().toLocaleDateString('ko-KR');
-
-  function makeTableXml(rows) {
-    var xml = '<w:tbl>'
-      +'<w:tblPr>'
-      +'<w:tblStyle w:val="TableGrid"/>'
-      +'<w:tblW w:w="9360" w:type="dxa"/>'
-      +'<w:tblBorders>'
-      +'<w:top w:val="single" w:sz="4" w:color="CCCCCC"/>'
-      +'<w:left w:val="single" w:sz="4" w:color="CCCCCC"/>'
-      +'<w:bottom w:val="single" w:sz="4" w:color="CCCCCC"/>'
-      +'<w:right w:val="single" w:sz="4" w:color="CCCCCC"/>'
-      +'<w:insideH w:val="single" w:sz="4" w:color="CCCCCC"/>'
-      +'<w:insideV w:val="single" w:sz="4" w:color="CCCCCC"/>'
-      +'</w:tblBorders>'
-      +'</w:tblPr>';
-    // 헤더행
-    xml += '<w:tr>'
-      +'<w:trPr><w:shd w:val="clear" w:color="auto" w:fill="F2F0EB"/></w:trPr>'
-      +'<w:tc><w:tcPr><w:tcW w:w="4320" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="F2F0EB"/></w:tcPr>'
-      +'<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:color w:val="444444"/></w:rPr><w:t>영단어</w:t></w:r></w:p></w:tc>'
-      +'<w:tc><w:tcPr><w:tcW w:w="5040" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="F2F0EB"/></w:tcPr>'
-      +'<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:color w:val="444444"/></w:rPr><w:t>한글뜻</w:t></w:r></w:p></w:tc>'
-      +'</w:tr>';
-    rows.forEach(function(item, idx) {
-      var fill = idx % 2 === 0 ? 'FFFFFF' : 'F9F9F7';
-      xml += '<w:tr>'
-        +'<w:tc><w:tcPr><w:tcW w:w="4320" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="'+fill+'"/></w:tcPr>'
-        +'<w:p><w:r><w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/><w:color w:val="1B3A6B"/></w:rPr><w:t xml:space="preserve">'+escXml(item.en)+'</w:t></w:r></w:p></w:tc>'
-        +'<w:tc><w:tcPr><w:tcW w:w="5040" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="'+fill+'"/></w:tcPr>'
-        +'<w:p><w:r><w:rPr><w:color w:val="333333"/></w:rPr><w:t xml:space="preserve">'+escXml(item.ko)+'</w:t></w:r></w:p></w:tc>'
-        +'</w:tr>';
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function makeTable(rows) {
+    var xml = '<w:tbl><w:tblPr><w:tblW w:w="9000" w:type="dxa"/><w:tblBorders><w:top w:val="single" w:sz="4" w:color="DDDDDD"/><w:left w:val="single" w:sz="4" w:color="DDDDDD"/><w:bottom w:val="single" w:sz="4" w:color="DDDDDD"/><w:right w:val="single" w:sz="4" w:color="DDDDDD"/><w:insideH w:val="single" w:sz="4" w:color="DDDDDD"/><w:insideV w:val="single" w:sz="4" w:color="DDDDDD"/></w:tblBorders></w:tblPr>';
+    xml += '<w:tr><w:tc><w:tcPr><w:tcW w:w="4200" w:type="dxa"/><w:shd w:val="clear" w:fill="F2F0EB"/></w:tcPr><w:p><w:r><w:rPr><w:b/></w:rPr><w:t>영단어</w:t></w:r></w:p></w:tc><w:tc><w:tcPr><w:tcW w:w="4800" w:type="dxa"/><w:shd w:val="clear" w:fill="F2F0EB"/></w:tcPr><w:p><w:r><w:rPr><w:b/></w:rPr><w:t>한글뜻</w:t></w:r></w:p></w:tc></w:tr>';
+    rows.forEach(function(item, idx){
+      var fill = idx%2===0 ? 'FFFFFF' : 'F9F8F6';
+      xml += '<w:tr><w:tc><w:tcPr><w:tcW w:w="4200" w:type="dxa"/><w:shd w:val="clear" w:fill="'+fill+'"/></w:tcPr><w:p><w:r><w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/></w:rPr><w:t>'+esc(item.en)+'</w:t></w:r></w:p></w:tc><w:tc><w:tcPr><w:tcW w:w="4800" w:type="dxa"/><w:shd w:val="clear" w:fill="'+fill+'"/></w:tcPr><w:p><w:r><w:t>'+esc(item.ko)+'</w:t></w:r></w:p></w:tc></w:tr>';
     });
-    xml += '</w:tbl>';
-    return xml;
+    return xml + '</w:tbl>';
   }
-
-  function escXml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-  function heading(txt, size, color) {
-    return '<w:p><w:pPr><w:spacing w:before="240" w:after="120"/></w:pPr>'
-      +'<w:r><w:rPr><w:b/><w:sz w:val="'+(size||28)+'"/><w:color w:val="'+(color||'1A1916')+'"/></w:rPr>'
-      +'<w:t>'+escXml(txt)+'</w:t></w:r></w:p>';
-  }
-
-  function para(txt, color, bold) {
-    return '<w:p><w:pPr><w:spacing w:after="80"/></w:pPr>'
-      +'<w:r><w:rPr>'+(bold?'<w:b/>':'')+'<w:sz w:val="22"/><w:color w:val="'+(color||'333333')+'"/></w:rPr>'
-      +'<w:t>'+escXml(txt)+'</w:t></w:r></w:p>';
-  }
-
-  var bodyXml = '';
-  bodyXml += heading('수능 영어 단어장', 36, '1A1916');
-  bodyXml += para('생성일: ' + date + '  ·  총 ' + items.length + '개 항목', '888888', false);
-  bodyXml += '<w:p><w:pPr><w:spacing w:after="120"/></w:pPr></w:p>';
-
-  if (words.length) {
-    bodyXml += heading('단어 (' + words.length + '개)', 26, '1B3A6B');
-    bodyXml += makeTableXml(words);
-    bodyXml += '<w:p><w:pPr><w:spacing w:after="240"/></w:pPr></w:p>';
-  }
-  if (idioms.length) {
-    bodyXml += heading('숙어 (' + idioms.length + '개)', 26, '2D5A3D');
-    bodyXml += makeTableXml(idioms);
-  }
-
-  var docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    +'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
-    +'<w:body>'
-    +'<w:sectPr>'
-    +'<w:pgSz w:w="11906" w:h="16838"/>'
-    +'<w:pgMar w:top="1134" w:right="850" w:bottom="1134" w:left="1134"/>'
-    +'</w:sectPr>'
-    + bodyXml
-    +'</w:body></w:document>';
-
-  var relsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-    +'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
-    +'</Relationships>';
-
-  var wordRelsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>';
-
-  var contentTypesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-    +'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-    +'<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
-    +'<Default Extension="xml" ContentType="application/xml"/>'
-    +'<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
-    +'</Types>';
-
-  // JSZip으로 패키징
-  var script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-  script.onload = function() {
-    var zip = new JSZip();
-    zip.file('[Content_Types].xml', contentTypesXml);
-    zip.file('_rels/.rels', relsXml);
-    zip.file('word/document.xml', docXml);
-    zip.file('word/_rels/document.xml.rels', wordRelsXml);
-    zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
-      .then(function(blob) {
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = '수능영어단어장.docx';
-        a.click();
-      });
+  function h(txt, sz, col){ return '<w:p><w:pPr><w:spacing w:before="200" w:after="100"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="'+(sz||26)+'"/><w:color w:val="'+(col||'1A1916')+'"/></w:rPr><w:t>'+esc(txt)+'</w:t></w:r></w:p>'; }
+  function sub(txt){ return '<w:p><w:pPr><w:spacing w:after="80"/></w:pPr><w:r><w:rPr><w:sz w:val="20"/><w:color w:val="888888"/></w:rPr><w:t>'+esc(txt)+'</w:t></w:r></w:p>'; }
+  var body = h('수능 영어 단어장',34,'1A1916')+sub('생성일: '+date+' · 총 '+items.length+'개 항목')+'<w:p><w:pPr><w:spacing w:after="160"/></w:pPr></w:p>';
+  if (words.length) body += h('단어 ('+words.length+'개)',24,'1B3A6B')+makeTable(words)+'<w:p><w:pPr><w:spacing w:after="200"/></w:pPr></w:p>';
+  if (idioms.length) body += h('숙어 ('+idioms.length+'개)',24,'2D5A3D')+makeTable(idioms);
+  var docXml='<?xml version="1.0" encoding="UTF-8"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1080" w:right="900" w:bottom="1080" w:left="1080"/></w:sectPr>'+body+'</w:body></w:document>';
+  var rels='<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  var wRels='<?xml version="1.0" encoding="UTF-8"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>';
+  var ct='<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+  var s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+  s.onload=function(){
+    var zip=new JSZip();
+    zip.file('[Content_Types].xml',ct);
+    zip.file('_rels/.rels',rels);
+    zip.file('word/document.xml',docXml);
+    zip.file('word/_rels/document.xml.rels',wRels);
+    zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'})
+      .then(function(blob){ var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='수능영어단어장.docx'; a.click(); });
   };
-  document.head.appendChild(script);
+  document.head.appendChild(s);
 }
 
-// ── PDF 다운로드 ──
 function downloadPDF() {
   if (!allItems.length) return;
   var items = getFiltered();
   var words = items.filter(function(i){ return i.type==='word'; });
   var idioms = items.filter(function(i){ return i.type==='idiom'; });
   var date = new Date().toLocaleDateString('ko-KR');
-
-  // jsPDF 로드
-  var script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-  script.onload = function() {
-    var script2 = document.createElement('script');
-    script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
-    script2.onload = function() {
-      var doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-
-      // 제목
-      doc.setFontSize(20);
-      doc.setTextColor(26, 25, 22);
-      doc.text('수능 영어 단어장', 20, 22);
-
-      // 부제
-      doc.setFontSize(10);
-      doc.setTextColor(136, 136, 136);
-      doc.text('생성일: ' + date + '  ·  총 ' + items.length + '개 항목', 20, 30);
-
-      var y = 38;
-
-      function addTable(title, color, rows) {
-        if (!rows.length) return;
-        doc.setFontSize(13);
-        doc.setTextColor(color[0], color[1], color[2]);
-        doc.text(title, 20, y);
-        y += 4;
-        doc.autoTable({
-          startY: y,
-          head: [['영단어', '한글뜻']],
-          body: rows.map(function(w){ return [w.en, w.ko]; }),
-          styles: { font: 'helvetica', fontSize: 10, cellPadding: 3 },
-          headStyles: { fillColor: [242, 240, 235], textColor: [68, 68, 68], fontStyle: 'bold' },
-          alternateRowStyles: { fillColor: [249, 249, 247] },
-          columnStyles: { 0: { cellWidth: 75, fontStyle: 'bold', textColor: [27, 58, 107] }, 1: { cellWidth: 100 } },
-          margin: { left: 20, right: 20 },
-          didDrawPage: function(data) { y = data.cursor.y; }
-        });
-        y = doc.lastAutoTable.finalY + 10;
+  var s1=document.createElement('script');
+  s1.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  s1.onload=function(){
+    var s2=document.createElement('script');
+    s2.src='https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
+    s2.onload=function(){
+      var doc=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+      doc.setFontSize(20); doc.setTextColor(26,25,22); doc.text('수능 영어 단어장',20,22);
+      doc.setFontSize(10); doc.setTextColor(136,136,136); doc.text('생성일: '+date+' · 총 '+items.length+'개 항목',20,30);
+      var y=38;
+      function addSection(title,color,rows){
+        if(!rows.length) return;
+        doc.setFontSize(13); doc.setTextColor(color[0],color[1],color[2]); doc.text(title,20,y); y+=5;
+        doc.autoTable({startY:y, head:[['영단어','한글뜻']], body:rows.map(function(w){return[w.en,w.ko];}),
+          styles:{fontSize:10,cellPadding:3}, headStyles:{fillColor:[242,240,235],textColor:[80,80,80],fontStyle:'bold'},
+          alternateRowStyles:{fillColor:[249,249,247]},
+          columnStyles:{0:{cellWidth:80,fontStyle:'bold',textColor:[27,58,107]},1:{cellWidth:95}},
+          margin:{left:20,right:20}});
+        y=doc.lastAutoTable.finalY+10;
       }
-
-      addTable('단어 (' + words.length + '개)', [27, 58, 107], words);
-      addTable('숙어 (' + idioms.length + '개)', [45, 90, 61], idioms);
-
+      addSection('단어 ('+words.length+'개)',[27,58,107],words);
+      addSection('숙어 ('+idioms.length+'개)',[45,90,61],idioms);
       doc.save('수능영어단어장.pdf');
     };
-    document.head.appendChild(script2);
+    document.head.appendChild(s2);
   };
-  document.head.appendChild(script);
+  document.head.appendChild(s1);
 }
 </script>
 </body>
