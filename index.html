@@ -28,177 +28,224 @@
   --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; font-size: 14px; line-height: 1.6; }
 
-.layout { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; }
+/* 전체 레이아웃: 좌 사이드바 + 우 메인 */
+.layout { display: grid; grid-template-columns: 300px 1fr; height: 100vh; }
 
-/* Sidebar */
-.sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-.sidebar-header { padding: 24px 24px 18px; border-bottom: 1px solid var(--border); }
-.logo { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-.logo-icon { width: 34px; height: 34px; background: var(--text); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; }
-.logo h1 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 600; }
-.logo-sub { font-size: 12px; color: var(--text3); margin-left: 44px; }
-.sidebar-body { padding: 18px 24px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
-.sec-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px; }
+/* ── 좌측 사이드바 ── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  height: 100vh;
+}
+.sidebar-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.logo { display: flex; align-items: center; gap: 9px; margin-bottom: 3px; }
+.logo-icon { width: 32px; height: 32px; background: var(--text); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-size: 15px; flex-shrink: 0; }
+.logo h1 { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 600; }
+.logo-sub { font-size: 11px; color: var(--text3); margin-left: 41px; }
+.sidebar-body { padding: 16px 20px; flex: 1; display: flex; flex-direction: column; gap: 14px; }
+.sec-label { font-size: 10px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
 
-/* Engine Toggle */
+/* 엔진 토글 */
 .engine-selector { background: var(--surface2); border-radius: var(--radius); padding: 3px; display: flex; gap: 2px; }
-.engine-btn { flex: 1; padding: 7px 10px; border: none; background: transparent; border-radius: 7px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text2); display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; }
+.engine-btn { flex: 1; padding: 7px 8px; border: none; background: transparent; border-radius: 7px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s; }
 .engine-btn.active-claude { background: var(--surface); color: var(--accent); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .engine-btn.active-gemini { background: var(--surface); color: var(--gemini); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 .engine-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
 /* Gemini API */
-.api-panel { background: var(--gemini-light); border: 1px solid #F0C4A8; border-radius: var(--radius); padding: 12px; display: none; margin-top: 8px; }
+.api-panel { background: var(--gemini-light); border: 1px solid #F0C4A8; border-radius: var(--radius); padding: 11px; display: none; margin-top: 7px; }
 .api-panel.show { display: block; }
-.api-panel-title { font-size: 12px; font-weight: 500; color: var(--gemini); margin-bottom: 7px; }
-.api-row { display: flex; gap: 6px; }
-.api-row input { flex: 1; font-family: 'DM Mono', monospace; font-size: 12px; padding: 7px 10px; border: 1px solid #F0C4A8; border-radius: 7px; background: white; color: var(--text); }
+.api-panel-title { font-size: 11px; font-weight: 500; color: var(--gemini); margin-bottom: 6px; }
+.api-row { display: flex; gap: 5px; }
+.api-row input { flex: 1; font-family: 'DM Mono', monospace; font-size: 11px; padding: 6px 9px; border: 1px solid #F0C4A8; border-radius: 7px; background: white; color: var(--text); min-width: 0; }
 .api-row input:focus { outline: none; border-color: var(--gemini); }
-.btn-save { padding: 7px 12px; background: var(--gemini); color: white; border: none; border-radius: 7px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
-.api-hint { font-size: 11px; color: #A05A3A; margin-top: 5px; }
+.btn-save { padding: 6px 10px; background: var(--gemini); color: white; border: none; border-radius: 7px; font-size: 11px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.api-hint { font-size: 10px; color: #A05A3A; margin-top: 5px; }
 .api-hint a { color: var(--gemini); }
 
-/* Input Mode Tabs */
-.mode-tabs { display: flex; background: var(--surface2); border-radius: var(--radius); padding: 3px; gap: 2px; }
-.mode-tab { flex: 1; padding: 7px 6px; border: none; background: transparent; border-radius: 7px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); transition: all 0.15s; text-align: center; }
-.mode-tab.active { background: var(--surface); color: var(--text); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+/* 설정 셀렉트 */
+select { width: 100%; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); appearance: none; -webkit-appearance: none; cursor: pointer; }
+select:focus { outline: none; border-color: var(--accent); }
+.select-wrap { position: relative; }
+.select-wrap::after { content: '▾'; position: absolute; right: 9px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--text3); pointer-events: none; }
 
-/* Text Paste Panel */
-.panel { display: none; }
-.panel.show { display: block; }
+/* 제외 단어 태그 */
+.tag-input-row { display: flex; gap: 5px; }
+.tag-input-row input { flex: 1; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); min-width: 0; }
+.tag-input-row input:focus { outline: none; border-color: var(--accent); }
+.btn-add { padding: 7px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; cursor: pointer; color: var(--text2); font-family: 'Noto Sans KR', sans-serif; white-space: nowrap; }
+.btn-add:hover { background: var(--border); }
+.tags-wrap { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+.tag { display: inline-flex; align-items: center; gap: 2px; padding: 2px 7px 2px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; font-size: 11px; color: var(--text2); font-family: 'DM Mono', monospace; }
+.tag-del { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 12px; padding: 0; line-height: 1; }
 
-.paste-box { position: relative; }
+/* 실행 버튼 */
+.btn-run { width: 100%; padding: 12px; background: var(--text); color: white; border: none; border-radius: var(--radius); font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: all 0.2s; margin-top: auto; }
+.btn-run:hover:not(:disabled) { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.btn-run:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* 에러 */
+.error-bar { padding: 9px 12px; background: var(--danger-light); border: 1px solid #FECACA; border-radius: var(--radius); color: var(--danger); font-size: 12px; display: none; }
+.error-bar.show { display: block; }
+
+/* ── 우측 메인 영역 ── */
+.main {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 상단: 입력 영역 */
+.input-area {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.input-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  gap: 0;
+}
+
+.input-tab {
+  padding: 14px 20px;
+  border: none;
+  background: none;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+}
+.input-tab:hover { color: var(--text2); }
+.input-tab.active { color: var(--text); font-weight: 500; border-bottom-color: var(--text); }
+
+/* 텍스트 패널 */
+.input-panel { display: none; padding: 16px 20px; }
+.input-panel.show { display: flex; flex-direction: column; gap: 8px; }
+
 .paste-area {
   width: 100%;
-  min-height: 180px;
-  padding: 12px;
+  height: 180px;
+  padding: 14px;
   border: 1.5px solid var(--border);
   border-radius: var(--radius);
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 13px;
   color: var(--text);
-  background: var(--surface);
-  resize: vertical;
-  line-height: 1.7;
+  background: var(--bg);
+  resize: none;
+  line-height: 1.8;
   transition: border-color 0.15s;
-  display: block;
 }
-.paste-area:focus { outline: none; border-color: var(--accent); }
-.paste-area::placeholder { color: var(--text3); font-size: 12px; line-height: 1.8; }
-.paste-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+.paste-area:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+.paste-area::placeholder { color: var(--text3); font-size: 12px; }
+
+.paste-footer { display: flex; align-items: center; justify-content: space-between; }
 .char-count { font-size: 11px; color: var(--text3); }
-.btn-clear { background: none; border: none; font-size: 12px; color: var(--text3); cursor: pointer; padding: 0; font-family: 'Noto Sans KR', sans-serif; }
-.btn-clear:hover { color: var(--danger); }
+.paste-btns { display: flex; gap: 6px; }
+.btn-sm { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+.btn-sm:hover { background: var(--surface2); }
+.btn-sm.primary { background: var(--accent-light); border-color: #B8D9C0; color: var(--accent); font-weight: 500; }
+.btn-sm.primary:hover { background: #D4ECD8; }
 
-/* File Upload Panel */
-.upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--radius); padding: 24px 16px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--surface2); }
+/* 파일 업로드 패널 */
+.upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--radius); padding: 28px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); display: flex; align-items: center; justify-content: center; gap: 16px; }
 .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-light); }
-.upload-icon { font-size: 28px; margin-bottom: 6px; }
-.upload-zone p { font-size: 13px; color: var(--text2); }
-.upload-zone span { font-size: 11px; color: var(--text3); display: block; margin-top: 3px; }
-.file-chip { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: var(--accent-light); border: 1px solid #B8D9C0; border-radius: var(--radius); margin-top: 8px; }
+.upload-left { font-size: 32px; }
+.upload-right p { font-size: 13px; color: var(--text2); font-weight: 500; margin-bottom: 2px; }
+.upload-right span { font-size: 11px; color: var(--text3); }
+.file-chip { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--accent-light); border: 1px solid #B8D9C0; border-radius: var(--radius); margin-top: 10px; }
 .file-chip-name { font-size: 12px; color: var(--accent); flex: 1; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.file-chip-del { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; padding: 0; }
-.img-thumb { width: 100%; max-height: 100px; object-fit: cover; border-radius: 7px; margin-top: 8px; display: none; border: 1px solid var(--border); }
+.file-chip-del { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; }
+.img-thumb { width: 100%; max-height: 80px; object-fit: cover; border-radius: 7px; margin-top: 8px; display: none; border: 1px solid var(--border); }
 
-/* Form Controls */
-select {
-  width: 100%;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 13px;
-  padding: 9px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
-  appearance: none;
-  -webkit-appearance: none;
-  cursor: pointer;
+/* 하단: 결과 영역 */
+.result-area {
+  overflow-y: auto;
+  padding: 20px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
-select:focus { outline: none; border-color: var(--accent); }
-.select-wrap { position: relative; }
-.select-wrap::after { content: '▾'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text3); pointer-events: none; }
 
-/* Tags */
-.tag-input-row { display: flex; gap: 6px; }
-.tag-input-row input { flex: 1; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--text); }
-.tag-input-row input:focus { outline: none; border-color: var(--accent); }
-.btn-add { padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; cursor: pointer; color: var(--text2); font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; white-space: nowrap; }
-.btn-add:hover { background: var(--border); }
-.tags-wrap { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
-.tag { display: inline-flex; align-items: center; gap: 3px; padding: 3px 8px 3px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text2); font-family: 'DM Mono', monospace; }
-.tag-del { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 13px; padding: 0; line-height: 1; }
+/* 빈 상태 */
+.empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text3); padding: 40px; }
+.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.35; }
+.empty-state h2 { font-size: 16px; color: var(--text2); font-weight: 500; margin-bottom: 6px; }
+.empty-state p { font-size: 12px; line-height: 1.9; }
 
-/* Run Button */
-.btn-run { width: 100%; padding: 13px; background: var(--text); color: white; border: none; border-radius: var(--radius); font-family: 'Noto Sans KR', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; margin-top: auto; }
-.btn-run:hover:not(:disabled) { background: #333; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-.btn-run:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
-
-/* Error */
-.error-bar { padding: 10px 14px; background: var(--danger-light); border: 1px solid #FECACA; border-radius: var(--radius); color: var(--danger); font-size: 13px; display: none; }
-.error-bar.show { display: block; }
-
-/* Main */
-.main { padding: 32px; display: flex; flex-direction: column; }
-.empty-state { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 60px 40px; color: var(--text3); }
-.empty-icon { font-size: 52px; margin-bottom: 16px; opacity: 0.35; }
-.empty-state h2 { font-size: 18px; color: var(--text2); font-weight: 500; margin-bottom: 8px; }
-.empty-state p { font-size: 13px; line-height: 1.9; }
-
-/* Progress */
-.progress-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 48px; text-align: center; display: none; box-shadow: var(--shadow); }
+/* 로딩 */
+.progress-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 40px; text-align: center; display: none; box-shadow: var(--shadow); }
 .progress-card.show { display: block; }
-.spinner { width: 36px; height: 36px; border: 2.5px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin 0.75s linear infinite; margin: 0 auto 16px; }
+.spinner { width: 32px; height: 32px; border: 2.5px solid var(--border); border-top-color: var(--text); border-radius: 50%; animation: spin 0.75s linear infinite; margin: 0 auto 14px; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.progress-text { font-size: 14px; color: var(--text2); }
+.progress-text { font-size: 13px; color: var(--text2); }
 
-/* Result */
+/* 결과 카드 */
 .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); display: none; }
 .result-card.show { display: block; animation: fadeIn 0.3s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.result-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.result-title { font-size: 15px; font-weight: 500; }
+
+.result-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.result-title { font-size: 14px; font-weight: 500; }
 .stat-chips { display: flex; gap: 6px; }
-.stat-chip { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+.stat-chip { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 500; }
 .chip-word { background: var(--accent2-light); color: var(--accent2); }
 .chip-idiom { background: var(--accent-light); color: var(--accent); }
 .chip-total { background: var(--surface2); color: var(--text2); }
-.tabs-row { padding: 10px 24px; border-bottom: 1px solid var(--border); display: flex; gap: 4px; }
-.tab { padding: 5px 14px; border-radius: 20px; border: 1px solid transparent; background: none; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
+
+.tabs-row { padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 4px; }
+.tab { padding: 5px 13px; border-radius: 20px; border: 1px solid transparent; background: none; font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
 .tab:hover { background: var(--surface2); }
 .tab.active { background: var(--text); color: white; }
+
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
-thead th { padding: 9px 24px; text-align: left; background: var(--surface2); color: var(--text3); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); }
-tbody td { padding: 11px 24px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+thead th { padding: 9px 20px; text-align: left; background: var(--surface2); color: var(--text3); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+tbody td { padding: 10px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { background: var(--surface2); }
 .word-en { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
-.type-badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 500; margin-left: 6px; vertical-align: middle; }
+.type-badge { display: inline-block; padding: 1px 6px; border-radius: 10px; font-size: 10px; font-weight: 500; margin-left: 5px; vertical-align: middle; }
 .badge-word { background: var(--accent2-light); color: var(--accent2); }
 .badge-idiom { background: var(--accent-light); color: var(--accent); }
 .word-ko { color: var(--text2); }
-.dl-bar { padding: 14px 24px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.dl-bar span { font-size: 12px; color: var(--text3); }
-.btn-dl { padding: 7px 14px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--surface); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
+
+.dl-bar { padding: 12px 20px; border-top: 1px solid var(--border); background: var(--surface2); display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
+.dl-bar span { font-size: 11px; color: var(--text3); }
+.btn-dl { padding: 6px 13px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--surface); font-family: 'Noto Sans KR', sans-serif; font-size: 12px; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
 .btn-dl:hover { background: var(--text); color: white; border-color: var(--text); }
 
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
 
-@media (max-width: 800px) {
-  .layout { grid-template-columns: 1fr; }
-  .sidebar { height: auto; position: static; }
-  .main { padding: 20px; }
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .sidebar { height: auto; overflow-y: visible; }
+  .main { height: auto; }
+  body { overflow: auto; height: auto; }
 }
 </style>
 </head>
 <body>
 <div class="layout">
 
-  <!-- 사이드바 -->
+  <!-- ── 좌측 사이드바: 설정 영역 ── -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <div class="logo">
@@ -231,51 +278,10 @@ tbody tr:hover td { background: var(--surface2); }
         </div>
       </div>
 
-      <!-- 입력 방식 탭 -->
-      <div>
-        <div class="sec-label">입력 방식</div>
-        <div class="mode-tabs">
-          <button class="mode-tab active" id="tabText" onclick="setMode('text')">✏️ 텍스트 붙여넣기</button>
-          <button class="mode-tab" id="tabFile" onclick="setMode('file')">📎 파일 업로드</button>
-        </div>
-      </div>
-
-      <!-- 텍스트 입력 패널 (기본) -->
-      <div class="panel show" id="panelText">
-        <textarea
-          class="paste-area"
-          id="pasteArea"
-          placeholder="여기에 영어 지문을 붙여넣기 하세요.&#10;&#10;예시)&#10;The phenomenon of cognitive dissonance occurs when a person simultaneously holds contradictory beliefs. This psychological concept was first introduced by Leon Festinger..."
-          oninput="onTextChange()"
-        ></textarea>
-        <div class="paste-bottom">
-          <span class="char-count" id="charCount">0자 입력됨</span>
-          <button class="btn-clear" onclick="clearText()">✕ 지우기</button>
-        </div>
-      </div>
-
-      <!-- 파일 업로드 패널 -->
-      <div class="panel" id="panelFile">
-        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
-          <div class="upload-icon">📂</div>
-          <p>클릭하거나 파일을 드래그하세요</p>
-          <span>JPG · PNG · PDF 지원</span>
-        </div>
-        <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.pdf" style="display:none">
-        <div id="fileChip" style="display:none">
-          <div class="file-chip">
-            <span id="fileChipIcon">📄</span>
-            <span class="file-chip-name" id="fileChipName"></span>
-            <button class="file-chip-del" onclick="clearFile()">✕</button>
-          </div>
-          <img id="imgThumb" class="img-thumb" alt="미리보기">
-        </div>
-      </div>
-
       <!-- 분석 설정 -->
       <div>
         <div class="sec-label">분석 설정</div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;flex-direction:column;gap:7px;">
           <div class="select-wrap">
             <select id="levelFilter">
               <option value="suneung">수능 빈출 단어 위주</option>
@@ -319,53 +325,101 @@ tbody tr:hover td { background: var(--surface2); }
     </div>
   </aside>
 
-  <!-- 메인 결과 영역 -->
+  <!-- ── 우측 메인: 입력 + 결과 ── -->
   <main class="main">
 
-    <div class="empty-state" id="emptyState">
-      <div class="empty-icon">📝</div>
-      <h2>영어 지문을 입력해주세요</h2>
-      <p>왼쪽 텍스트 입력창에 영어 지문을 붙여넣으면<br>AI가 단어와 숙어를 자동으로 추출합니다<br><br>JPG · PDF 파일 업로드도 지원합니다</p>
-    </div>
+    <!-- 상단: 입력 탭 -->
+    <div class="input-area">
+      <div class="input-tabs">
+        <button class="input-tab active" id="tabText" onclick="setMode('text')">✏️ 텍스트 붙여넣기</button>
+        <button class="input-tab" id="tabFile" onclick="setMode('file')">📎 파일 업로드</button>
+      </div>
 
-    <div class="progress-card" id="progressCard">
-      <div class="spinner"></div>
-      <div class="progress-text" id="progressText">AI가 분석 중입니다...</div>
-    </div>
-
-    <div class="result-card" id="resultCard">
-      <div class="result-header">
-        <div class="result-title">추출 결과</div>
-        <div class="stat-chips">
-          <span class="stat-chip chip-word" id="chipWord">단어 0</span>
-          <span class="stat-chip chip-idiom" id="chipIdiom">숙어 0</span>
-          <span class="stat-chip chip-total" id="chipTotal">전체 0</span>
+      <!-- 텍스트 패널 -->
+      <div class="input-panel show" id="panelText">
+        <textarea
+          class="paste-area"
+          id="pasteArea"
+          placeholder="여기에 영어 지문을 Ctrl+V 로 붙여넣기 하세요.&#10;&#10;예시) The phenomenon of cognitive dissonance occurs when a person simultaneously holds contradictory beliefs. This psychological concept was first introduced by Leon Festinger in 1957..."
+          oninput="onTextChange()"
+        ></textarea>
+        <div class="paste-footer">
+          <span class="char-count" id="charCount">0자 입력됨</span>
+          <div class="paste-btns">
+            <button class="btn-sm" onclick="clearText()">지우기</button>
+          </div>
         </div>
       </div>
-      <div class="tabs-row">
-        <button class="tab active" onclick="switchTab('all',this)">전체</button>
-        <button class="tab" onclick="switchTab('word',this)">단어만</button>
-        <button class="tab" onclick="switchTab('idiom',this)">숙어만</button>
-      </div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th style="width:45%">영어</th>
-              <th style="width:55%">한글뜻</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
-      <div class="dl-bar">
-        <span>다운로드</span>
-        <button class="btn-dl" onclick="downloadHTML()">📄 PDF용 HTML</button>
-        <button class="btn-dl" onclick="downloadTXT()">📝 HWP용 TXT</button>
-        <button class="btn-dl" onclick="downloadCSV()">📊 CSV</button>
+
+      <!-- 파일 패널 -->
+      <div class="input-panel" id="panelFile">
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <div class="upload-left">📂</div>
+          <div class="upload-right">
+            <p>클릭하거나 파일을 드래그하세요</p>
+            <span>JPG · PNG · PDF 지원</span>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.pdf" style="display:none">
+        <div id="fileChip" style="display:none">
+          <div class="file-chip">
+            <span id="fileChipIcon">📄</span>
+            <span class="file-chip-name" id="fileChipName"></span>
+            <button class="file-chip-del" onclick="clearFile()">✕</button>
+          </div>
+          <img id="imgThumb" class="img-thumb" alt="미리보기">
+        </div>
       </div>
     </div>
 
+    <!-- 하단: 결과 영역 -->
+    <div class="result-area" id="resultArea">
+
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📝</div>
+        <h2>결과가 여기에 표시됩니다</h2>
+        <p>위 입력창에 영어 지문을 붙여넣고<br>왼쪽 설정을 확인한 뒤<br><strong>AI 분석 시작</strong> 버튼을 누르세요</p>
+      </div>
+
+      <div class="progress-card" id="progressCard">
+        <div class="spinner"></div>
+        <div class="progress-text" id="progressText">AI가 분석 중입니다...</div>
+      </div>
+
+      <div class="result-card" id="resultCard">
+        <div class="result-header">
+          <div class="result-title">추출 결과</div>
+          <div class="stat-chips">
+            <span class="stat-chip chip-word" id="chipWord">단어 0</span>
+            <span class="stat-chip chip-idiom" id="chipIdiom">숙어 0</span>
+            <span class="stat-chip chip-total" id="chipTotal">전체 0</span>
+          </div>
+        </div>
+        <div class="tabs-row">
+          <button class="tab active" onclick="switchTab('all',this)">전체</button>
+          <button class="tab" onclick="switchTab('word',this)">단어만</button>
+          <button class="tab" onclick="switchTab('idiom',this)">숙어만</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:45%">영어</th>
+                <th style="width:55%">한글뜻</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="dl-bar">
+          <span>다운로드</span>
+          <button class="btn-dl" onclick="downloadHTML()">📄 PDF용 HTML</button>
+          <button class="btn-dl" onclick="downloadTXT()">📝 HWP용 TXT</button>
+          <button class="btn-dl" onclick="downloadCSV()">📊 CSV</button>
+        </div>
+      </div>
+
+    </div>
   </main>
 </div>
 
@@ -377,41 +431,31 @@ var fileType = null;
 var allItems = [];
 var currentTab = 'all';
 
-// 저장된 Gemini 키 불러오기
-try {
-  var saved = localStorage.getItem('gemini_key');
-  if (saved) document.getElementById('geminiKey').value = saved;
-} catch(e) {}
+try { var saved = localStorage.getItem('gemini_key'); if (saved) document.getElementById('geminiKey').value = saved; } catch(e) {}
 
-// AI 엔진 선택
 function setEngine(e) {
   engine = e;
-  document.getElementById('btnClaude').className = 'engine-btn' + (e === 'claude' ? ' active-claude' : '');
-  document.getElementById('btnGemini').className = 'engine-btn' + (e === 'gemini' ? ' active-gemini' : '');
-  document.getElementById('apiPanel').className = 'api-panel' + (e === 'gemini' ? ' show' : '');
+  document.getElementById('btnClaude').className = 'engine-btn' + (e==='claude' ? ' active-claude' : '');
+  document.getElementById('btnGemini').className = 'engine-btn' + (e==='gemini' ? ' active-gemini' : '');
+  document.getElementById('apiPanel').className = 'api-panel' + (e==='gemini' ? ' show' : '');
   checkReady();
 }
 
 function saveKey() {
   var key = document.getElementById('geminiKey').value.trim();
-  if (key) {
-    try { localStorage.setItem('gemini_key', key); } catch(e) {}
-    alert('API 키가 저장되었습니다!');
-  }
+  if (key) { try { localStorage.setItem('gemini_key', key); } catch(e) {} alert('저장되었습니다!'); }
   checkReady();
 }
 
-// 입력 방식 전환
 function setMode(mode) {
   inputMode = mode;
-  document.getElementById('tabText').className = 'mode-tab' + (mode === 'text' ? ' active' : '');
-  document.getElementById('tabFile').className = 'mode-tab' + (mode === 'file' ? ' active' : '');
-  document.getElementById('panelText').className = 'panel' + (mode === 'text' ? ' show' : '');
-  document.getElementById('panelFile').className = 'panel' + (mode === 'file' ? ' show' : '');
+  document.getElementById('tabText').className = 'input-tab' + (mode==='text' ? ' active' : '');
+  document.getElementById('tabFile').className = 'input-tab' + (mode==='file' ? ' active' : '');
+  document.getElementById('panelText').className = 'input-panel' + (mode==='text' ? ' show' : '');
+  document.getElementById('panelFile').className = 'input-panel' + (mode==='file' ? ' show' : '');
   checkReady();
 }
 
-// 텍스트 입력 감지
 function onTextChange() {
   var val = document.getElementById('pasteArea').value;
   document.getElementById('charCount').textContent = val.length.toLocaleString() + '자 입력됨';
@@ -424,35 +468,26 @@ function clearText() {
   checkReady();
 }
 
-// 파일 업로드
 var uploadZone = document.getElementById('uploadZone');
 var fileInput = document.getElementById('fileInput');
-
 uploadZone.addEventListener('dragover', function(e) { e.preventDefault(); uploadZone.classList.add('drag'); });
 uploadZone.addEventListener('dragleave', function() { uploadZone.classList.remove('drag'); });
-uploadZone.addEventListener('drop', function(e) {
-  e.preventDefault();
-  uploadZone.classList.remove('drag');
-  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
-});
-fileInput.addEventListener('change', function(e) {
-  if (e.target.files[0]) handleFile(e.target.files[0]);
-});
+uploadZone.addEventListener('drop', function(e) { e.preventDefault(); uploadZone.classList.remove('drag'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+fileInput.addEventListener('change', function(e) { if (e.target.files[0]) handleFile(e.target.files[0]); });
 
 function handleFile(file) {
-  var allowed = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
+  var allowed = ['image/jpeg','image/png','image/jpg','application/pdf'];
   if (allowed.indexOf(file.type) === -1) { showError('JPG, PNG, PDF 파일만 지원됩니다.'); return; }
   hideError();
   var reader = new FileReader();
   reader.onload = function(e) {
     fileData = e.target.result.split(',')[1];
     fileType = file.type;
-    document.getElementById('fileChipIcon').textContent = file.type === 'application/pdf' ? '📑' : '🖼️';
+    document.getElementById('fileChipIcon').textContent = file.type==='application/pdf' ? '📑' : '🖼️';
     document.getElementById('fileChipName').textContent = file.name;
     document.getElementById('fileChip').style.display = 'block';
     var thumb = document.getElementById('imgThumb');
-    if (file.type !== 'application/pdf') { thumb.src = e.target.result; thumb.style.display = 'block'; }
-    else { thumb.style.display = 'none'; }
+    if (file.type !== 'application/pdf') { thumb.src = e.target.result; thumb.style.display = 'block'; } else { thumb.style.display = 'none'; }
     checkReady();
   };
   reader.readAsDataURL(file);
@@ -466,29 +501,20 @@ function clearFile() {
   checkReady();
 }
 
-// 준비 상태 확인
 function checkReady() {
   var hasKey = engine === 'claude' || document.getElementById('geminiKey').value.trim().length > 0;
-  var hasInput = false;
-  if (inputMode === 'text') {
-    hasInput = document.getElementById('pasteArea').value.trim().length > 5;
-  } else {
-    hasInput = fileData !== null;
-  }
+  var hasInput = inputMode === 'text' ? document.getElementById('pasteArea').value.trim().length > 5 : fileData !== null;
   document.getElementById('btnRun').disabled = !(hasInput && hasKey);
 }
 
-// 제외 단어 태그
 function addTag() {
   var input = document.getElementById('excludeInput');
   var val = input.value.trim().toLowerCase();
   if (!val) return;
   var wrap = document.getElementById('tagsWrap');
-  var existing = [];
   var tags = wrap.querySelectorAll('.tag');
-  for (var i = 0; i < tags.length; i++) {
-    existing.push(tags[i].firstChild.textContent.trim());
-  }
+  var existing = [];
+  for (var i = 0; i < tags.length; i++) existing.push(tags[i].firstChild.textContent.trim());
   if (existing.indexOf(val) !== -1) { input.value = ''; return; }
   var tag = document.createElement('span');
   tag.className = 'tag';
@@ -496,27 +522,16 @@ function addTag() {
   wrap.appendChild(tag);
   input.value = '';
 }
-
 function removeTag(btn) { btn.parentElement.remove(); }
-
 function getExcludeWords() {
-  var wrap = document.getElementById('tagsWrap');
-  var tags = wrap.querySelectorAll('.tag');
+  var tags = document.getElementById('tagsWrap').querySelectorAll('.tag');
   var words = [];
-  for (var i = 0; i < tags.length; i++) {
-    words.push(tags[i].firstChild.textContent.trim().toLowerCase());
-  }
+  for (var i = 0; i < tags.length; i++) words.push(tags[i].firstChild.textContent.trim().toLowerCase());
   return words;
 }
-
-function showError(msg) {
-  var b = document.getElementById('errorBar');
-  b.textContent = '⚠ ' + msg;
-  b.classList.add('show');
-}
+function showError(msg) { var b = document.getElementById('errorBar'); b.textContent = '⚠ ' + msg; b.classList.add('show'); }
 function hideError() { document.getElementById('errorBar').classList.remove('show'); }
 
-// AI 분석 실행
 function runAnalysis() {
   hideError();
   document.getElementById('emptyState').style.display = 'none';
@@ -526,99 +541,70 @@ function runAnalysis() {
 
   var level = document.getElementById('levelFilter').value;
   var excludeWords = getExcludeWords();
-  var levelDesc = {
-    suneung: '수능 빈출 어휘 위주로',
-    all: '지문 속 모든 중요 단어를',
-    both: '수능 빈출 단어와 지문의 모든 중요 단어를 모두'
-  }[level];
+  var levelDesc = { suneung:'수능 빈출 어휘 위주로', all:'지문 속 모든 중요 단어를', both:'수능 빈출과 모든 중요 단어를 모두' }[level];
 
-  var basePrompt = '수능 영어 전문가로서 아래 영어 텍스트를 분석해 ' + levelDesc + ' 추출하세요.\n\n'
-    + '반드시 제외할 단어: ' + excludeWords.join(', ') + ', I, am, is, are, was, were, be, been, he, she, it, we, they, you, my, your, his, her, our, their, a, an, the, this, that, and, or, but, in, on, at, to, for, of, do, did, can, will, would, have, has, go, get, very, also, just, not, so, if, as, with, from, by\n\n'
-    + '규칙:\n'
-    + '1. 위 제외 단어는 절대 포함하지 마세요\n'
-    + '2. 단어(word)와 숙어(idiom, 2개 이상 단어의 관용표현) 모두 추출\n'
-    + '3. 중복 제거\n'
-    + '4. 반드시 JSON만 출력 (마크다운 코드블록 없이):\n'
-    + '{"items":[{"en":"단어","ko":"한글뜻","type":"word 또는 idiom","pos":"n/v/adj/adv"}]}';
+  var prompt = '수능 영어 전문가로서 아래 영어 텍스트를 분석해 ' + levelDesc + ' 추출하세요.\n\n'
+    + '반드시 제외: ' + excludeWords.join(', ') + ', I, am, is, are, was, were, be, been, he, she, it, we, they, you, my, your, his, her, our, their, a, an, the, this, that, and, or, but, in, on, at, to, for, of, do, did, can, will, would, have, has, go, get, very, also, just, not, so, if, as, with, from, by, up, out, one, two, all, some, such\n\n'
+    + '규칙:\n1. 위 단어 절대 포함 금지\n2. 단어(word)와 숙어(idiom) 모두 추출\n3. 중복 제거\n4. JSON만 출력(마크다운 없이):\n{"items":[{"en":"단어","ko":"한글뜻","type":"word 또는 idiom","pos":"n/v/adj/adv"}]}';
 
-  if (engine === 'claude') {
-    callClaude(basePrompt);
-  } else {
+  if (engine === 'claude') callClaude(prompt);
+  else {
     var key = document.getElementById('geminiKey').value.trim();
     if (!key) { showError('Gemini API 키를 입력해주세요.'); document.getElementById('progressCard').classList.remove('show'); document.getElementById('btnRun').disabled = false; checkReady(); return; }
-    callGemini(basePrompt, key);
+    callGemini(prompt, key);
   }
 }
 
-function callClaude(basePrompt) {
-  document.getElementById('progressText').textContent = 'Claude AI가 분석 중입니다...';
-  var content;
+function getContent(prompt) {
   if (inputMode === 'text') {
-    var text = document.getElementById('pasteArea').value.trim();
-    content = [{ type: 'text', text: basePrompt + '\n\n[분석할 영어 텍스트]\n' + text }];
+    return [{ type:'text', text: prompt + '\n\n[분석할 텍스트]\n' + document.getElementById('pasteArea').value.trim() }];
   } else {
-    if (fileType === 'application/pdf') {
-      content = [
-        { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: fileData } },
-        { type: 'text', text: basePrompt }
-      ];
-    } else {
-      content = [
-        { type: 'image', source: { type: 'base64', media_type: fileType === 'image/png' ? 'image/png' : 'image/jpeg', data: fileData } },
-        { type: 'text', text: basePrompt }
-      ];
-    }
+    if (fileType === 'application/pdf') return [{ type:'document', source:{ type:'base64', media_type:'application/pdf', data:fileData } }, { type:'text', text:prompt }];
+    return [{ type:'image', source:{ type:'base64', media_type: fileType==='image/png'?'image/png':'image/jpeg', data:fileData } }, { type:'text', text:prompt }];
   }
+}
 
+function callClaude(prompt) {
+  document.getElementById('progressText').textContent = 'Claude AI가 분석 중입니다...';
   fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1500, messages: [{ role: 'user', content: content }] })
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1500, messages:[{ role:'user', content: getContent(prompt) }] })
   })
-  .then(function(res) { return res.json(); })
-  .then(function(data) {
-    if (data.error) throw new Error('Claude 오류: ' + data.error.message);
-    var text = data.content.map(function(i) { return i.text || ''; }).join('');
-    handleResult(text);
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.error) throw new Error('Claude 오류: ' + d.error.message);
+    handleResult(d.content.map(function(i){ return i.text||''; }).join(''));
   })
   .catch(function(e) { handleError(e.message); });
 }
 
-function callGemini(basePrompt, key) {
+function callGemini(prompt, key) {
   document.getElementById('progressText').textContent = 'Gemini AI가 분석 중입니다...';
-  var parts;
-  if (inputMode === 'text') {
-    var text = document.getElementById('pasteArea').value.trim();
-    parts = [{ text: basePrompt + '\n\n[분석할 영어 텍스트]\n' + text }];
-  } else {
-    parts = [
-      { text: basePrompt },
-      { inline_data: { mime_type: fileType === 'application/pdf' ? 'application/pdf' : (fileType === 'image/png' ? 'image/png' : 'image/jpeg'), data: fileData } }
-    ];
-  }
-
-  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + key, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ contents: [{ parts: parts }] })
+  var parts = inputMode === 'text'
+    ? [{ text: prompt + '\n\n[분석할 텍스트]\n' + document.getElementById('pasteArea').value.trim() }]
+    : [{ text:prompt }, { inline_data:{ mime_type: fileType==='application/pdf'?'application/pdf':(fileType==='image/png'?'image/png':'image/jpeg'), data:fileData } }];
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+key, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ contents:[{ parts:parts }] })
   })
-  .then(function(res) { return res.json(); })
-  .then(function(data) {
-    if (data.error) throw new Error('Gemini 오류: ' + data.error.message);
-    var text = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] ? data.candidates[0].content.parts[0].text : '';
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.error) throw new Error('Gemini 오류: ' + d.error.message);
+    var text = d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0] ? d.candidates[0].content.parts[0].text : '';
     handleResult(text);
   })
   .catch(function(e) { handleError(e.message); });
 }
 
 function handleResult(text) {
-  var clean = text.replace(/```json|```/g, '').trim();
+  var clean = text.replace(/```json|```/g,'').trim();
   var parsed;
   try { parsed = JSON.parse(clean); } catch(e) { handleError('응답 파싱 오류. 다시 시도해주세요.'); return; }
   allItems = parsed.items || [];
   renderTable(allItems);
   document.getElementById('progressCard').classList.remove('show');
   document.getElementById('resultCard').classList.add('show');
+  document.getElementById('resultArea').scrollTop = 0;
   document.getElementById('btnRun').disabled = false;
   checkReady();
 }
@@ -631,95 +617,78 @@ function handleError(msg) {
   checkReady();
 }
 
-// 테이블 렌더링
 function renderTable(items) {
-  var words = items.filter(function(i) { return i.type === 'word'; });
-  var idioms = items.filter(function(i) { return i.type === 'idiom'; });
+  var words = items.filter(function(i){ return i.type==='word'; });
+  var idioms = items.filter(function(i){ return i.type==='idiom'; });
   document.getElementById('chipWord').textContent = '단어 ' + words.length;
   document.getElementById('chipIdiom').textContent = '숙어 ' + idioms.length;
   document.getElementById('chipTotal').textContent = '전체 ' + items.length;
-
-  var filtered = items;
-  if (currentTab === 'word') filtered = words;
-  if (currentTab === 'idiom') filtered = idioms;
-
+  var filtered = currentTab==='word' ? words : currentTab==='idiom' ? idioms : items;
   var showPos = document.getElementById('outputFormat').value === 'pos';
   var body = document.getElementById('tableBody');
   body.innerHTML = '';
-
   filtered.forEach(function(item) {
     var tr = document.createElement('tr');
-    var posText = showPos && item.pos ? '<span style="font-size:11px;color:var(--text3);font-family:DM Mono,monospace;margin-left:4px;">[' + item.pos + ']</span>' : '';
-    var badge = item.type === 'idiom'
-      ? '<span class="type-badge badge-idiom">숙어</span>'
-      : '<span class="type-badge badge-word">단어</span>';
-    tr.innerHTML = '<td><span class="word-en">' + item.en + '</span>' + badge + posText + '</td><td class="word-ko">' + item.ko + '</td>';
+    var posText = showPos && item.pos ? '<span style="font-size:10px;color:var(--text3);margin-left:4px;">['+item.pos+']</span>' : '';
+    var badge = item.type==='idiom' ? '<span class="type-badge badge-idiom">숙어</span>' : '<span class="type-badge badge-word">단어</span>';
+    tr.innerHTML = '<td><span class="word-en">'+item.en+'</span>'+badge+posText+'</td><td class="word-ko">'+item.ko+'</td>';
     body.appendChild(tr);
   });
 }
 
 function switchTab(tab, btn) {
   currentTab = tab;
-  var tabs = document.querySelectorAll('.tab');
-  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
   btn.classList.add('active');
   renderTable(allItems);
 }
 
-function getFilteredItems() {
-  if (currentTab === 'word') return allItems.filter(function(i) { return i.type === 'word'; });
-  if (currentTab === 'idiom') return allItems.filter(function(i) { return i.type === 'idiom'; });
-  return allItems;
+function getFiltered() {
+  return currentTab==='word' ? allItems.filter(function(i){ return i.type==='word'; }) : currentTab==='idiom' ? allItems.filter(function(i){ return i.type==='idiom'; }) : allItems;
 }
 
-// 다운로드
 function downloadHTML() {
   if (!allItems.length) return;
-  var items = getFilteredItems();
-  var words = items.filter(function(i) { return i.type === 'word'; });
-  var idioms = items.filter(function(i) { return i.type === 'idiom'; });
-  var wordRows = words.map(function(w, i) { return '<tr><td class="num">' + (i+1) + '</td><td class="en">' + w.en + '</td><td class="ko">' + w.ko + '</td></tr>'; }).join('');
-  var idiomRows = idioms.map(function(w, i) { return '<tr><td class="num">' + (i+1) + '</td><td class="en">' + w.en + '</td><td class="ko">' + w.ko + '</td></tr>'; }).join('');
+  var items = getFiltered();
+  var words = items.filter(function(i){ return i.type==='word'; });
+  var idioms = items.filter(function(i){ return i.type==='idiom'; });
+  var wRows = words.map(function(w,i){ return '<tr><td class="num">'+(i+1)+'</td><td class="en">'+w.en+'</td><td>'+w.ko+'</td></tr>'; }).join('');
+  var iRows = idioms.map(function(w,i){ return '<tr><td class="num">'+(i+1)+'</td><td class="en">'+w.en+'</td><td>'+w.ko+'</td></tr>'; }).join('');
   var html = '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>수능 영어 단어장</title>'
-    + '<style>body{font-family:\'Noto Sans KR\',sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1916;}'
-    + 'h1{font-size:22px;margin-bottom:4px;}.sub{color:#888;font-size:13px;margin-bottom:28px;}'
-    + 'h2{font-size:16px;border-bottom:2px solid #1a1916;padding-bottom:6px;margin:24px 0 12px;}'
-    + 'table{width:100%;border-collapse:collapse;font-size:13px;}'
-    + 'th{background:#f2f0eb;padding:8px 12px;text-align:left;font-weight:500;border-bottom:1px solid #ddd;}'
-    + 'td{padding:9px 12px;border-bottom:1px solid #eee;}.num{color:#aaa;width:30px;}.en{font-family:monospace;font-weight:500;width:45%;}'
-    + '@media print{body{margin:20px;}}</style></head><body>'
-    + '<h1>📖 수능 영어 단어장</h1>'
-    + '<div class="sub">생성일: ' + new Date().toLocaleDateString('ko-KR') + ' · 총 ' + items.length + '개 항목</div>'
-    + (words.length ? '<h2>단어 (' + words.length + '개)</h2><table><thead><tr><th>#</th><th>영단어</th><th>한글뜻</th></tr></thead><tbody>' + wordRows + '</tbody></table>' : '')
-    + (idioms.length ? '<h2>숙어 (' + idioms.length + '개)</h2><table><thead><tr><th>#</th><th>숙어</th><th>한글뜻</th></tr></thead><tbody>' + idiomRows + '</tbody></table>' : '')
-    + '</body></html>';
-  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href = url; a.download = '수능영어단어장.html'; a.click();
-  setTimeout(function() { alert('다운로드된 HTML 파일을 브라우저에서 열고\nCtrl+P → PDF로 저장하세요.'); }, 400);
+    +'<style>body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1916;}'
+    +'h1{font-size:20px;}. sub{color:#888;font-size:13px;margin-bottom:28px;}'
+    +'h2{font-size:15px;border-bottom:2px solid #1a1916;padding-bottom:5px;margin:22px 0 10px;}'
+    +'table{width:100%;border-collapse:collapse;font-size:13px;}'
+    +'th{background:#f2f0eb;padding:8px 12px;text-align:left;border-bottom:1px solid #ddd;}'
+    +'td{padding:8px 12px;border-bottom:1px solid #eee;}.num{color:#aaa;width:28px;}.en{font-family:monospace;font-weight:600;width:44%;}'
+    +'@media print{body{margin:20px;}}</style></head><body>'
+    +'<h1>📖 수능 영어 단어장</h1>'
+    +'<p class="sub">생성일: '+new Date().toLocaleDateString('ko-KR')+' · 총 '+items.length+'개</p>'
+    +(words.length?'<h2>단어 ('+words.length+'개)</h2><table><thead><tr><th>#</th><th>영단어</th><th>한글뜻</th></tr></thead><tbody>'+wRows+'</tbody></table>':'')
+    +(idioms.length?'<h2>숙어 ('+idioms.length+'개)</h2><table><thead><tr><th>#</th><th>숙어</th><th>한글뜻</th></tr></thead><tbody>'+iRows+'</tbody></table>':'')
+    +'</body></html>';
+  var blob = new Blob([html], {type:'text/html;charset=utf-8'});
+  var a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='수능영어단어장.html'; a.click();
+  setTimeout(function(){ alert('브라우저에서 파일을 열고 Ctrl+P → PDF로 저장하세요.'); }, 400);
 }
 
 function downloadTXT() {
   if (!allItems.length) return;
-  var items = getFilteredItems();
-  var words = items.filter(function(i) { return i.type === 'word'; });
-  var idioms = items.filter(function(i) { return i.type === 'idiom'; });
-  var txt = '수능 영어 단어장\n생성일: ' + new Date().toLocaleDateString('ko-KR') + '\n' + '='.repeat(40) + '\n\n';
-  if (words.length) { txt += '[ 단어 ]\n'; words.forEach(function(w) { txt += w.en + '\t' + w.ko + '\n'; }); txt += '\n'; }
-  if (idioms.length) { txt += '[ 숙어 ]\n'; idioms.forEach(function(w) { txt += w.en + '\t' + w.ko + '\n'; }); }
-  var blob = new Blob(['\uFEFF' + txt], { type: 'text/plain;charset=utf-8' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href = url; a.download = '수능영어단어장.txt'; a.click();
+  var items = getFiltered();
+  var words = items.filter(function(i){ return i.type==='word'; });
+  var idioms = items.filter(function(i){ return i.type==='idiom'; });
+  var txt = '수능 영어 단어장\n생성일: '+new Date().toLocaleDateString('ko-KR')+'\n'+'='.repeat(40)+'\n\n';
+  if (words.length) { txt += '[ 단어 ]\n'; words.forEach(function(w){ txt += w.en+'\t'+w.ko+'\n'; }); txt += '\n'; }
+  if (idioms.length) { txt += '[ 숙어 ]\n'; idioms.forEach(function(w){ txt += w.en+'\t'+w.ko+'\n'; }); }
+  var a = document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+txt],{type:'text/plain;charset=utf-8'})); a.download='수능영어단어장.txt'; a.click();
 }
 
 function downloadCSV() {
   if (!allItems.length) return;
-  var items = getFilteredItems();
+  var items = getFiltered();
   var csv = '\uFEFF영단어,한글뜻,유형\n';
-  items.forEach(function(w) { csv += '"' + w.en + '","' + w.ko + '","' + (w.type === 'idiom' ? '숙어' : '단어') + '"\n'; });
-  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href = url; a.download = '수능영어단어장.csv'; a.click();
+  items.forEach(function(w){ csv += '"'+w.en+'","'+w.ko+'",'+(w.type==='idiom'?'숙어':'단어')+'\n'; });
+  var a = document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download='수능영어단어장.csv'; a.click();
 }
 </script>
 </body>
