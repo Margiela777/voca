@@ -413,9 +413,8 @@ tbody tr:hover td { background: var(--surface2); }
         </div>
         <div class="dl-bar">
           <span>다운로드</span>
-          <button class="btn-dl" onclick="downloadHTML()">📄 PDF용 HTML</button>
-          <button class="btn-dl" onclick="downloadTXT()">📝 HWP용 TXT</button>
-          <button class="btn-dl" onclick="downloadCSV()">📊 CSV</button>
+          <button class="btn-dl" onclick="downloadDOCX()">📝 DOCX (한글/Word)</button>
+          <button class="btn-dl" onclick="downloadPDF()">📄 PDF</button>
         </div>
       </div>
 
@@ -647,48 +646,180 @@ function getFiltered() {
   return currentTab==='word' ? allItems.filter(function(i){ return i.type==='word'; }) : currentTab==='idiom' ? allItems.filter(function(i){ return i.type==='idiom'; }) : allItems;
 }
 
-function downloadHTML() {
+// ── DOCX 다운로드 (한글/Word 호환) ──
+function downloadDOCX() {
   if (!allItems.length) return;
   var items = getFiltered();
   var words = items.filter(function(i){ return i.type==='word'; });
   var idioms = items.filter(function(i){ return i.type==='idiom'; });
-  var wRows = words.map(function(w,i){ return '<tr><td class="num">'+(i+1)+'</td><td class="en">'+w.en+'</td><td>'+w.ko+'</td></tr>'; }).join('');
-  var iRows = idioms.map(function(w,i){ return '<tr><td class="num">'+(i+1)+'</td><td class="en">'+w.en+'</td><td>'+w.ko+'</td></tr>'; }).join('');
-  var html = '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>수능 영어 단어장</title>'
-    +'<style>body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:0 20px;color:#1a1916;}'
-    +'h1{font-size:20px;}. sub{color:#888;font-size:13px;margin-bottom:28px;}'
-    +'h2{font-size:15px;border-bottom:2px solid #1a1916;padding-bottom:5px;margin:22px 0 10px;}'
-    +'table{width:100%;border-collapse:collapse;font-size:13px;}'
-    +'th{background:#f2f0eb;padding:8px 12px;text-align:left;border-bottom:1px solid #ddd;}'
-    +'td{padding:8px 12px;border-bottom:1px solid #eee;}.num{color:#aaa;width:28px;}.en{font-family:monospace;font-weight:600;width:44%;}'
-    +'@media print{body{margin:20px;}}</style></head><body>'
-    +'<h1>📖 수능 영어 단어장</h1>'
-    +'<p class="sub">생성일: '+new Date().toLocaleDateString('ko-KR')+' · 총 '+items.length+'개</p>'
-    +(words.length?'<h2>단어 ('+words.length+'개)</h2><table><thead><tr><th>#</th><th>영단어</th><th>한글뜻</th></tr></thead><tbody>'+wRows+'</tbody></table>':'')
-    +(idioms.length?'<h2>숙어 ('+idioms.length+'개)</h2><table><thead><tr><th>#</th><th>숙어</th><th>한글뜻</th></tr></thead><tbody>'+iRows+'</tbody></table>':'')
-    +'</body></html>';
-  var blob = new Blob([html], {type:'text/html;charset=utf-8'});
-  var a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='수능영어단어장.html'; a.click();
-  setTimeout(function(){ alert('브라우저에서 파일을 열고 Ctrl+P → PDF로 저장하세요.'); }, 400);
+  var date = new Date().toLocaleDateString('ko-KR');
+
+  function makeTableXml(rows) {
+    var xml = '<w:tbl>'
+      +'<w:tblPr>'
+      +'<w:tblStyle w:val="TableGrid"/>'
+      +'<w:tblW w:w="9360" w:type="dxa"/>'
+      +'<w:tblBorders>'
+      +'<w:top w:val="single" w:sz="4" w:color="CCCCCC"/>'
+      +'<w:left w:val="single" w:sz="4" w:color="CCCCCC"/>'
+      +'<w:bottom w:val="single" w:sz="4" w:color="CCCCCC"/>'
+      +'<w:right w:val="single" w:sz="4" w:color="CCCCCC"/>'
+      +'<w:insideH w:val="single" w:sz="4" w:color="CCCCCC"/>'
+      +'<w:insideV w:val="single" w:sz="4" w:color="CCCCCC"/>'
+      +'</w:tblBorders>'
+      +'</w:tblPr>';
+    // 헤더행
+    xml += '<w:tr>'
+      +'<w:trPr><w:shd w:val="clear" w:color="auto" w:fill="F2F0EB"/></w:trPr>'
+      +'<w:tc><w:tcPr><w:tcW w:w="4320" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="F2F0EB"/></w:tcPr>'
+      +'<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:color w:val="444444"/></w:rPr><w:t>영단어</w:t></w:r></w:p></w:tc>'
+      +'<w:tc><w:tcPr><w:tcW w:w="5040" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="F2F0EB"/></w:tcPr>'
+      +'<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/><w:color w:val="444444"/></w:rPr><w:t>한글뜻</w:t></w:r></w:p></w:tc>'
+      +'</w:tr>';
+    rows.forEach(function(item, idx) {
+      var fill = idx % 2 === 0 ? 'FFFFFF' : 'F9F9F7';
+      xml += '<w:tr>'
+        +'<w:tc><w:tcPr><w:tcW w:w="4320" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="'+fill+'"/></w:tcPr>'
+        +'<w:p><w:r><w:rPr><w:rFonts w:ascii="Courier New" w:hAnsi="Courier New"/><w:color w:val="1B3A6B"/></w:rPr><w:t xml:space="preserve">'+escXml(item.en)+'</w:t></w:r></w:p></w:tc>'
+        +'<w:tc><w:tcPr><w:tcW w:w="5040" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="'+fill+'"/></w:tcPr>'
+        +'<w:p><w:r><w:rPr><w:color w:val="333333"/></w:rPr><w:t xml:space="preserve">'+escXml(item.ko)+'</w:t></w:r></w:p></w:tc>'
+        +'</w:tr>';
+    });
+    xml += '</w:tbl>';
+    return xml;
+  }
+
+  function escXml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  function heading(txt, size, color) {
+    return '<w:p><w:pPr><w:spacing w:before="240" w:after="120"/></w:pPr>'
+      +'<w:r><w:rPr><w:b/><w:sz w:val="'+(size||28)+'"/><w:color w:val="'+(color||'1A1916')+'"/></w:rPr>'
+      +'<w:t>'+escXml(txt)+'</w:t></w:r></w:p>';
+  }
+
+  function para(txt, color, bold) {
+    return '<w:p><w:pPr><w:spacing w:after="80"/></w:pPr>'
+      +'<w:r><w:rPr>'+(bold?'<w:b/>':'')+'<w:sz w:val="22"/><w:color w:val="'+(color||'333333')+'"/></w:rPr>'
+      +'<w:t>'+escXml(txt)+'</w:t></w:r></w:p>';
+  }
+
+  var bodyXml = '';
+  bodyXml += heading('수능 영어 단어장', 36, '1A1916');
+  bodyXml += para('생성일: ' + date + '  ·  총 ' + items.length + '개 항목', '888888', false);
+  bodyXml += '<w:p><w:pPr><w:spacing w:after="120"/></w:pPr></w:p>';
+
+  if (words.length) {
+    bodyXml += heading('단어 (' + words.length + '개)', 26, '1B3A6B');
+    bodyXml += makeTableXml(words);
+    bodyXml += '<w:p><w:pPr><w:spacing w:after="240"/></w:pPr></w:p>';
+  }
+  if (idioms.length) {
+    bodyXml += heading('숙어 (' + idioms.length + '개)', 26, '2D5A3D');
+    bodyXml += makeTableXml(idioms);
+  }
+
+  var docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    +'<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+    +'<w:body>'
+    +'<w:sectPr>'
+    +'<w:pgSz w:w="11906" w:h="16838"/>'
+    +'<w:pgMar w:top="1134" w:right="850" w:bottom="1134" w:left="1134"/>'
+    +'</w:sectPr>'
+    + bodyXml
+    +'</w:body></w:document>';
+
+  var relsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+    +'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+    +'</Relationships>';
+
+  var wordRelsXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    +'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>';
+
+  var contentTypesXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    +'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    +'<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+    +'<Default Extension="xml" ContentType="application/xml"/>'
+    +'<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+    +'</Types>';
+
+  // JSZip으로 패키징
+  var script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+  script.onload = function() {
+    var zip = new JSZip();
+    zip.file('[Content_Types].xml', contentTypesXml);
+    zip.file('_rels/.rels', relsXml);
+    zip.file('word/document.xml', docXml);
+    zip.file('word/_rels/document.xml.rels', wordRelsXml);
+    zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' })
+      .then(function(blob) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = '수능영어단어장.docx';
+        a.click();
+      });
+  };
+  document.head.appendChild(script);
 }
 
-function downloadTXT() {
+// ── PDF 다운로드 ──
+function downloadPDF() {
   if (!allItems.length) return;
   var items = getFiltered();
   var words = items.filter(function(i){ return i.type==='word'; });
   var idioms = items.filter(function(i){ return i.type==='idiom'; });
-  var txt = '수능 영어 단어장\n생성일: '+new Date().toLocaleDateString('ko-KR')+'\n'+'='.repeat(40)+'\n\n';
-  if (words.length) { txt += '[ 단어 ]\n'; words.forEach(function(w){ txt += w.en+'\t'+w.ko+'\n'; }); txt += '\n'; }
-  if (idioms.length) { txt += '[ 숙어 ]\n'; idioms.forEach(function(w){ txt += w.en+'\t'+w.ko+'\n'; }); }
-  var a = document.createElement('a'); a.href=URL.createObjectURL(new Blob(['\uFEFF'+txt],{type:'text/plain;charset=utf-8'})); a.download='수능영어단어장.txt'; a.click();
-}
+  var date = new Date().toLocaleDateString('ko-KR');
 
-function downloadCSV() {
-  if (!allItems.length) return;
-  var items = getFiltered();
-  var csv = '\uFEFF영단어,한글뜻,유형\n';
-  items.forEach(function(w){ csv += '"'+w.en+'","'+w.ko+'",'+(w.type==='idiom'?'숙어':'단어')+'\n'; });
-  var a = document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download='수능영어단어장.csv'; a.click();
+  // jsPDF 로드
+  var script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  script.onload = function() {
+    var script2 = document.createElement('script');
+    script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js';
+    script2.onload = function() {
+      var doc = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+      // 제목
+      doc.setFontSize(20);
+      doc.setTextColor(26, 25, 22);
+      doc.text('수능 영어 단어장', 20, 22);
+
+      // 부제
+      doc.setFontSize(10);
+      doc.setTextColor(136, 136, 136);
+      doc.text('생성일: ' + date + '  ·  총 ' + items.length + '개 항목', 20, 30);
+
+      var y = 38;
+
+      function addTable(title, color, rows) {
+        if (!rows.length) return;
+        doc.setFontSize(13);
+        doc.setTextColor(color[0], color[1], color[2]);
+        doc.text(title, 20, y);
+        y += 4;
+        doc.autoTable({
+          startY: y,
+          head: [['영단어', '한글뜻']],
+          body: rows.map(function(w){ return [w.en, w.ko]; }),
+          styles: { font: 'helvetica', fontSize: 10, cellPadding: 3 },
+          headStyles: { fillColor: [242, 240, 235], textColor: [68, 68, 68], fontStyle: 'bold' },
+          alternateRowStyles: { fillColor: [249, 249, 247] },
+          columnStyles: { 0: { cellWidth: 75, fontStyle: 'bold', textColor: [27, 58, 107] }, 1: { cellWidth: 100 } },
+          margin: { left: 20, right: 20 },
+          didDrawPage: function(data) { y = data.cursor.y; }
+        });
+        y = doc.lastAutoTable.finalY + 10;
+      }
+
+      addTable('단어 (' + words.length + '개)', [27, 58, 107], words);
+      addTable('숙어 (' + idioms.length + '개)', [45, 90, 61], idioms);
+
+      doc.save('수능영어단어장.pdf');
+    };
+    document.head.appendChild(script2);
+  };
+  document.head.appendChild(script);
 }
 </script>
 </body>
