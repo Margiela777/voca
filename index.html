@@ -402,7 +402,7 @@ function showError(msg) { var b=document.getElementById('errorBar'); b.textConte
 function hideError() { document.getElementById('errorBar').classList.remove('show'); }
 
 function runAnalysis() {
-  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'AIzaSyCY2EHM_3P408Pny2qDDGOdBSHNBklm_Sc') {
+  if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
     showError('API 키가 설정되지 않았습니다.'); return;
   }
   hideError();
